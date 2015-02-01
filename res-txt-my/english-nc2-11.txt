@@ -1,0 +1,172 @@
+// english-nc2-11
+// V1.0
+
+$第56课
+Q:boundary 
+A:['baundəri] n.界线；边界
+Q:pump 
+A:[pʌmp] v.用泵抽
+Q:overtake 
+A:['əuvə'teik] v.(坏天气、麻烦等)突然降临
+Q:backwater 
+A:['bæk'wɔ:tə] n.回水河汊
+Q:predecessor 
+A:['pri:disesə] n.前任
+Q:meadow 
+A:['medəu] n.草地，草场
+Q:crown 
+A:[kraun] v.给…戴花环
+Q:holly 
+A:['hɔli] n.一种冬青植物
+Q:wreath 
+A:[ri:θ] n.花环
+Q:occurrence 
+A:[ə'kʌrəns] n.偶发事件
+Q:proportion 
+A:[prə'pɔ:ʃən] n.部分
+Q:site 
+A:[sait] v.使位于
+Q:spell 
+A:[spel] v.招致，带来
+Q:stall 
+A:[stɔ:l] n.牲口棚
+Q:attic 
+A:['ætik] n.顶楼
+Q:sweeping 
+A:['swi:piŋ] a.范围广大的
+Q:critical 
+A:['kritikəl] a.危急的
+Q:juncture 
+A:['dʒʌŋktʃə] n.时刻，关头
+Q:raft 
+A:[ra:ft] n.木筏
+Q:unduly 
+A:[ʌn'dju:li] ad.过度地
+Q:foundations 
+A:[] n.地基
+Q:stoutly 
+A:['stautli] ad.牢固地，粗壮的
+Q:submerge 
+A:[sʌb'mə:dʒ] v.浸没
+Q:grapple 
+A:['græpl] v.抓住
+$第57课
+Q:alien 
+A:['eiljən] a.异国的，外国的
+Q:emigrate 
+A:['emigreit] v.移居(国外)
+Q:absorb 
+A:[əb'sɔ:b] v.全神贯注于
+Q:embedded 
+A:[] a.扎牢的
+Q:mortally 
+A:[-təli] ad.致命地
+Q:comprehensive 
+A:['kɔmpri'hensiv] a.广泛的；丰富的
+Q:milestone 
+A:['mailstəun] n.里程碑
+Q:territory 
+A:['teritəri] n.领地；地区
+Q:milometer 
+A:[mai'lɔmitə] n.计程表
+Q:spire 
+A:['spaiə] n.(教堂的)塔尖
+Q:retrace 
+A:[ri'treis] v.返回，重走
+Q:stumble 
+A:['stʌmbl] v.趔趄地走
+Q:horizon 
+A:[hə'raizn] n.地平线
+Q:reservoir 
+A:['rezəvwa:] n.水库
+$第58课
+Q:lurk 
+A:[lə:k] v.潜藏
+Q:hinder 
+A:['hində, 'haində] v.妨碍
+Q:fingerprint 
+A:['fiŋgəprint] n.指纹
+Q:chaos 
+A:['keiɔs] n.混乱，无秩序
+Q:inconceivable 
+A:['inkən'si:vəbl] a.不可思议的
+Q:veritable 
+A:['veritəbl] a.真正的，地地道道的
+Q:magpie 
+A:['mægpai] n.喜欢收藏物品的人
+Q:toss 
+A:[tɔs] v.扔
+Q:discard 
+A:[dis'ka:d] v.丢弃
+Q:constable 
+A:['kʌnstəbl] n.警察
+Q:ransack 
+A:['rænsæk] v.洗劫
+Q:balcony 
+A:['bælkəni] n.阳台
+Q:fussy 
+A:['fʌsi] a.大惊小怪的，小题大做的
+$第59课
+Q:amass 
+A:[ə'mæs] v.积聚，收集
+Q:indiscriminate 
+A:['indis'kriminit] a.不加选择的
+Q:clutter 
+A:['klʌtə] n.] v.一堆杂物;乱糟糟地堆满
+Q:string 
+A:[striŋ] n.细线, 细绳
+Q:requisite 
+A:['rekwizit] n.必需品
+Q:mania 
+A:['meinjə] n.癖好,狂热
+Q:sketch 
+A:[sketʃ] n.草图，图样
+Q:remote 
+A:[ri'məut] a.(机会，可能性)极少的，小的
+Q:strong-minded 
+A:[] a.意志坚强的
+Q:relaxation 
+A:[ri:læk'seiʃən] n.休息，娱乐
+Q:verify 
+A:['verifai] v.查证，核实
+Q:bearing 
+A:['bɛəriŋ] n.关系，联系
+Q:like-minded 
+A:[] a.志趣相投的
+Q:specimen 
+A:['spesimin] n.标本
+Q:constructively 
+A:[] ad.有益的，积极的
+Q:contented 
+A:[kən'tentid] a.心满意足的
+Q:boredom 
+A:['bɔ:dəm] n.烦恼，无聊
+$第60课
+Q:punctuality 
+A:['pʌŋktju'æliti] n.准时
+Q:rural 
+A:['ruərəl] ad.农村的
+Q:disregard 
+A:['disri'ga:d] v.不顾，无视
+Q:intellectual 
+A:['inti'lektjuəl] n.知识分子
+Q:abstruse 
+A:[æb'stru:s] a.深奥的
+Q:coordinate 
+A:[kəu'ɔdinit] v.协调
+Q:reproach 
+A:[ri'prəutʃ] v.责备
+Q:puncture 
+A:['pʌŋktʃə] v.刺破(轮胎)
+Q:diversion 
+A:[dai'və:ʃən] n.改道，绕道
+Q:trial 
+A:['traiəl] n.讨厌的事、人
+Q:fraction 
+A:['frækʃən] n.很小一点儿
+Q:flourish 
+A:['flʌriʃ] n.挥舞(打手势)
+Q:microscopic 
+A:['maikrə'skɔpik] a.微小的
+Q:adamant 
+A:['ædəmənt] a.坚定的，不动摇的

@@ -1,0 +1,236 @@
+// oeminfo simlock rfnv 加密算法 安全
+// V0.9
+
+// oeminfo 方案
+Q:oeminfo数据的存储方式
+A:oeminfo的数据按type分，一个type至少占据一块，可以不连续分布。oeminfo分区中，有数据的每块都有一个头，记录该地的type id。因此，可实现非联系存储。
+Q:oeminfo type：otp
+A:RSA公钥A和B。
+Q:oeminfo type：oem_id
+A:即手机的密钥池，目前有如下几种数据：emei、蓝牙地址、wifi地址、emmc psn号码。所有这些数据，用私钥B加密过，存放在oeminfo中的是密文。
+Q:oeminfo type：simlock数据
+A:simlock数据包括三部分：key[5]，5组密码； flag：使能标志；  data：plmn id list。这三组数据都有不同的加密方式。
+Q:oeminfo type：simlock_alterable
+A:simlock数据中的可修改部分，包括simlock_dck_count（规定解锁次数）、simlock_feature_inds。
+Q:oeminfo type：nv_backup
+A:rfnv备份数据
+Q:oeminfo type：err_times
+A:nck密码试错的次数（最多5次，5次后手机将锁定，无法搜网）
+Q:oeminfo type：wifi_test
+A:wifi校准数据。
+Q:oeminfo type：prl_roaming_list
+A:prl数据，只有cdma数据用。
+Q:作为对比：diag解锁次数
+A:diag解锁次数，保存在 60137号nv，解锁一次，可以在重启50次之间使用diag后台。
+Q:oeminfo中的几个类型是加密的
+A:simlock相关的类型加密。使用AES加密，可解码成明文。代码：crypto_aes_init()。
+Q:oeminfo数据的头结构（1）
+A:头结构为每个block的第一个page，长度有三种：emmc和小page nand为512字节，2k nand为2k，4k nand为4k，有效数据则不变，为28字节，由6个字段组成。剩余空间填0xFFFF。
+Q:oeminfo数据的头结构（2）
+A:头结构定义见 oeminfo_hdr_page，第一个字段8字节长，为migic number，为“oem_info”的asc码值，即 0x5F4D454F 0x4F464849。
+Q:oeminfo数据的头结构（3）
+A:字段2为version，目前最大为4。表示为4K nand的oeminfo。1表示小块nand，2表示emmc，3没有用。
+Q:oeminfo数据的头结构（4）
+A:字段3为info_type，数据类型，即oeminfo_info_type_enum_type，目前有大约30多种。
+Q:oeminfo数据的头结构（5）
+A:字段3为total_blck，该类型共占据多少block；
+Q:oeminfo数据的头结构（6）
+A:字段4为curr_logical_blck，当前为第多少个block，从1开始；
+Q:oeminfo数据的头结构（7）
+A:字段5为total_byte，该类型的实际大小，以byte为单位。
+Q:oeminfo中哪些方案已经不再使用？
+A:由于oeminfo字段只能增加，不能减少，所以它不可避免的成为很多方案的废墟。比如HW_VER（硬件版本号）、AMSS_ECC（amss ecc校验，智能机上不做了）。
+
+// simlock
+Q:simlock方案：key
+A:simlock_key[5]，2组共10个密码。第一组5个即所谓的nck密码，用于simlock解锁。第二组，第一个为uck密码，第二个用于diag鉴权，其它三套不用。
+Q:密码的生成方式
+A:这5套密码均为imei+随机数，并经过md5加密后保存到手机上，即手机上没有保存明文。生产线会在数据库中保存明文，有emei即可查询。
+Q:nck密码解锁
+A:解密时，用户输入一个16位10进制数，经md5加密后和oeminfo中的密文对比，如果匹配，即解锁。
+Q:nck解锁失败
+A:nck解锁失败10次，手机就锁定了，必须用uck来解。uck可以使用无限次。
+Q:simlock方案：flag
+A:simlock使能标志，当值为imei+“disable”，并经过md5加密后的值时，将去使能simlock；其它值，或无值，均为使能simlock。
+Q:simlock数据：IMSI（关键点）
+A:sim卡中的数据。IMSI共有15位，其结构如下：PLMN+MSIN。
+Q:simlock数据：PLMN
+A:PLMN（Public Land Mobile Network，公共陆地移动网络），PLMN=MCC+MNC。另外，固定电话系统叫公用交换电话网络（PSTN）。
+Q:simlock数据：MCC
+A:mcc：Mobile Country Code，移动国家码，共3位十进制数字，中国为460。
+Q:simlock数据：MNC
+A:mnc：Mobile Network Code，移动网络码，2-3位十进制数字，中国移动00和02，中国联通01，中国电信03。
+Q:simlock数据：GID1、GID2
+A:sim/usim卡上的两个文件，用来标识卡用户的文件。
+Q:simlock数据：MSIN
+A:MSIN=HLR（子网ID，2字节）+simcode（<=8字节）。10-11位。
+Q:simlock分5级（1）：network
+A:锁PLMN。lock code：mcc+mnc。解锁码：NCK（网络码）。
+Q:simlock分5级（2）：subnet
+A:锁运营商子网。lock code：HLR。解锁码：NSCK（子网码）。
+Q:simlock分5级（3）：service provider
+A:锁运营商码。lock code：GID1。解锁码：SPCK（运营商码，少用）
+Q:simlock分5级（4）：corporate
+A:锁社区、社群。高通不支持。
+Q:simlock分5级（5）：sim
+A:锁sim卡，即只能用指定号。高通不支持。
+Q:怎么锁卡？
+A:就是将simlock_data与IMSI进行匹配，通过了才可以搜网。
+Q:simlock数据结构（1）
+A:imei号的长度：11字节，8字节有效数据，1字节有效数据长度，2字节crc值。
+Q:simlock数据结构（2）
+A:蓝牙地址：6字节蓝牙地址，和2字节crc值。
+Q:simlock数据结构（3）
+A:MEID：9字节，7字节有效数据+2字节crc。  ESN：6字节，4字节有效数据+2字节crc。
+Q:为产线方便，烧片版本不锁下面4种卡
+A:cmu test card：00101，04004； 移动卡：46000；  联通卡：46001。 升级版本不锁cmu test卡。
+Q:simlock方案：data
+A:simlock data即plmn id list，包括两类数据：mcc、mnc，数据含密文和明文。
+Q:plmn id的数量
+A:plmn id list一般有多个，方案支持20组ID。如果一个运营商只用一组id的话，那么一个手机可以支持20个运营商的网络。
+Q:simlock方案（1）
+A:oeminfo中的simlock数据即运营商ID list，和SIM卡的IMSI卡号匹配。匹配方法是：前3位为国家码MCC，后面2-3位为运营商码MNC（具体2位3位取决于MCC），两个字段都匹配上即ok。
+Q:simlock方案（2）
+A:比如中国移动的运营商ID list包括46000，那么手机IMSI包含这个字符串的手机就只能上中国移动。
+Q:simlock方案（3）
+A:另外一种是锁HLR和NDC，即锁子网，即只能用运营商指定区域内的网络。很少用。子网定义由运营商自己做，一般由区域码和范围码组成。
+Q:在simlock中imei的作用
+A:imei号是作为手机的唯一序列号，并作为手机的密码源的主要部分，对simlock data进行加密。
+Q:simlock产线写入鉴权方案（1）
+A:diag鉴权，用的是第二套nck（默认值为16个0）。没有鉴权的状态下，diag端口只支持3个鉴权相关的握手命令和一个升级命令。
+Q:simlock产线写入鉴权方案（2）
+A:安全后台鉴权，目的是打开otp数据的读写权限。步骤是手机侧生成随机数，传给pc侧私钥加密，然后把密文发给手机侧，手机侧解密后和原来的随机数对比，如吻合则鉴权通过。pc端需要加密狗。
+Q:simlock产线写入鉴权方案（3）
+A:注意，后台鉴权手机侧用的公钥是B套，升级用A套。
+Q:simlock产线写入鉴权方案（4）
+A:通过鉴权后，IMEI、BT地址、wifi地址都是由产线一次性写入oeminfo。然后，将三者写入各自nv项。接着将这几个nv置为只读状态，只有在鉴权后才可以修改。
+Q:sim卡上有pin码、puk码
+A:pin码类似开机密码，用户执行设置。pin码三次输错，需要用puk码解；puk10次输错，则sim卡自毁。puk码一般在购买sim卡时运营商会告知。pin码功能用户可以关闭。
+
+// 开机安全检查 
+Q:开机安全检查的代码
+A:在tmc_init()中调用security_data_check()，完成开机安全检查。
+Q:开机安全检查的步骤
+A:步骤包括otp数据check、bt地址check、wifi地址check、MEID/ESN check（for CDMA）、imei check（for gsm/wcdma）、simlock检测。
+Q:开机安全检查的方案
+A:数据check主要是根据各数据的结构，通过crc检查合法性，以及oeminfo与nv中数据的对比。simlock检查不通过，则手机无法搜网。
+Q:开机安全检查的log
+A:如果失败，失败信息写入log文件："/security_store.log"。
+
+Q:新的emmc-sn号oeminfo分区加密方案
+A:使用emmc的psn号，该值为4字节随机数，出厂前写入，无法用软件修改。已确认各供应商都支持该值。
+Q:psn作为加密数据的一部分
+A:作为安全方案的密钥源（sec id）的一部分。密钥源=imei+bt+wifi+psn。
+Q:psn作为simlock的一部分
+A:psn将对simlock数据进行加密。
+
+// nv
+Q:nv的概念1
+A:nv即非易失项，手机掉电后数据还在。高通平台的nv，用于保存modem侧一些模块的配置项，NV有6000项左右，主要是射频参数。
+Q:nv的概念2
+A:NV以单个文件的形式保存在EFS中（文件名即为nv id），但用户是不能随意访问的，只能通过QXDM来进行读写。
+Q:nv包括三种
+A:静态nv -> efs; 校准nv -> nv备份列表； 计算nv -> 随它去。
+Q:QXDM 命令行读写nv
+A:nv_read_item / nv_write_item, 结果通过 command output 窗口看。
+Q:charger/usb开关
+A:2822   其中：0，表示使能； 1不使能
+Q:蓝牙地址
+A:447
+Q:diag解锁次数
+A:60137
+Q:log控制开关
+A:1892  其中：0x1，F3；0x4，event；0x5，F3 + event
+Q:打印基本控制
+A:1895
+Q:efs保存文件数
+A:1962
+   
+Q:高通diag后台控制开关
+A:60000   0x50表示打开；其它值表示关闭
+Q:efs版本号更新标志
+A:60001
+Q:efs版本号
+A:60002，为字符串
+Q:升级版本标志
+A:60006   其中：0表示升级版本；烧片版本未激活
+
+// rfnv备份恢复方案
+Q:要备份的rfnv的列表
+A:这个列表放在efs中，文件名为 /brew/nv/rfnv_backup.cfg。这个文件可用 numberToBin.exe工具生成。
+Q:rfnv备份时机
+A:备份启动的时机：在正常升级前，会检查oeminfo中是否有rfnv备份信息，如果没有则先自动备份，然后再升级。产线备份就是采用这个流程。同时，备份可通过diag命令。
+Q:rfnv备份流程
+A:读cfg文件 --》 读nv --》 写入rfnv.bin文件 --》 写入oeminfo分区。备份过程有log。
+Q:rfnv恢复过程
+A:恢复的时机发生在升级后的第一次重启，tmc_init()通过检测nv 60006的值，是特定magic值就恢复；完毕后置为0。恢复流程不依赖备份列表。代码可见:rfnv_backup_restore()。
+Q:rfnv备份恢复的测试方法
+A:恢复log常见 /brew/nv/rf_nv_restore.log，测试可用 rtmanager。
+Q:CDMA产品的meid概率丢失
+A:问题初步确认为概率没有恢复。可能是由于oeminfo api无法避免重入。
+
+// 加密算法
+Q:加密方法的种类
+A:基于密钥的算法分为两类：对称算法和非对称算法。
+Q:对称算法
+A:又叫传统密码方法，是n多种算法的统称。主要特征是加密和解密用的密码一样。由于安全系数比较低，二战后普遍不用。
+Q:非对称算法
+A:又叫公开密钥算法。主要特征是加密、解密分别用不同的密钥。解密的叫公钥，可以公开；加密的叫私钥，不能公开。最典型的非对称算法是RSA。
+Q:RSA（1）
+A:最有影响力的非对称算法，业界公认它能抵抗迄今为止已知的所有的攻击方法。它于1978年发明。
+Q:RSA（2）
+A:其优势是公钥公开，适应网络的开放性要求，同时同一算法可支持签名和加密。缺点是算法复杂，效率较低。
+Q:RSA（3）
+A:RSA的安全性依赖大数分解。公钥和私钥都是两个大素数（大于100个二进制位）的函数。据推测，从一个密钥和密文推断出明文的难度等同于分解两个素数的积。
+Q:RSA（4）
+A:RSA可用于签名，即私钥加密，公钥解密；也可用于加密，公钥加密，私钥解密。我们的方案中，明文是1023位，生成密文1024位。
+Q:RSA的代码
+A:rsa_public_decrypt(公钥解密), ras_private_encrypt(私钥加密)。有反过来用的api。
+Q:MD5（1）
+A:90年代有MIT发明，经由md2、md3、md4发展起来。
+Q:MD5（2）
+A:将任意上的字符串变换成一个128位的整数，不可逆，即无法由密文转为明文。
+Q:MD5（3）
+A:MD5的典型应用时对一段数据产生指纹，以防止被“篡改”，这就是数字签名。
+Q:MD5的代码
+A:hash_md5_init(初始化)，hash_md5_update(update数据进去，可多次调用)，hash_md5_final(给出结果)
+Q:CRC（1）
+A:循环冗余校验。算法历史较长，版本多样，应用很广泛。通讯领域用得最多的是CRC32，它由不限长的数据，生成一个32位的校验值。
+Q:CRC（2）
+A:优势是简单，速度快，缺点是很容易碰撞，只能针对小数据。
+Q:AES的代码
+A:crypto_aes_init()，crypto_aes_encrypt_block(块加密，输入必须为块长的整数倍)，crypto_aes_deencrypt_block(块解密)
+Q:DES
+A:对称算法，数据加密标准，速度较快，适用于加密大量数据的场合。
+Q:SHA1、SHA256、SHA384、SHA512
+A:与CRC、MD5类似，都是一种散列算法。它产生的签名长，更为安全，是散列算法的发展方向。SHA1有160位，其它几种即以位宽命名。目前主要用于数字签名，BT中也用它。
+Q:SHA1的代码
+A:hash_sha1_init(初始化)，hash_sha1_update(update数据进去)，hash_sha1_final(给出结果)。
+Q:下列加密算法被认为是安全的（1）
+A:不可逆算法：SHA（不带密钥），强度：224/256/384/512；HMAL-SHA（带密钥），强度：同SHA。
+Q:下列加密算法被认为是安全的（2）
+A:可逆算法.对称密钥：AES，强度：128/192/256
+Q:下列加密算法被认为是安全的（3）
+A:可逆算法.不对称算法：RSA（1024/2048）、ECC（192/216）、DSA（1024）、ECDSA（192/216）、PH（1024、2048）
+Q:下列加密算法被认为是不安全的
+A:DES、RC2/4、MD5/HMAL-MD5、SHA0/1
+
+// widevine
+Q:widevine
+A:2012年4月，google要求所有2012年5月1日发货的ICS版本的手机都必须支持windevine。这个名字来自一家做DRM的小公司，2010年被google收购。
+Q:widevine的原理
+A:android利用widevine提供付费的音视频。为了防止widevine模块被破解，google要求设备厂商必须保证widevine的安全，一旦手机刷机或root，则必须将widevine禁止使用。
+Q:seckernel功能
+A:我们在G版本上，借鉴widevine，实现了它的一部分功能，叫seckernel，在开机的时候对boot、recovery进行检验，如果发现是非华为的版本，系统就不开机。
+Q:seckernel的原理
+A:系统打包的时候，在各模块的尾部，加入带RSA密文的MD5列表，然后在oemsbl中进行检验。
+
+// android安全模式
+Q:android安全模式
+A:android4.1支持安全模式，在这种模式下，手机界面上显示“safe mode”，并停用所有第三方应用，以方便对问题手机进行检查和维护。
+Q:如何进入android安全模式？
+A:各种手机都不同。默认为长按power键，一直到“进入安全模式”菜单出现，然后选择即进入。我们手机据说开机过程中，长按menu键可进入（未验证）。
+
+
+
+

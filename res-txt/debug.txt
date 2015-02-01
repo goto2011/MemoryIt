@@ -1,0 +1,297 @@
+// 调试 trac脚本 LOG
+// V0.8
+
+// 死机分析的一般流程
+Q:屏不亮
+A:分析思路：（1）手机没上电：看电流，如果在70-80ma以下，则证明没上电，转硬件分析；（2）或者borad_id、lcd_id错误，判断方法是焊trace线、modem侧代码、符号表，跟踪modem侧代码。
+Q:开机马达震动表明什么？
+A:说明oemsbl已经跑到显示logo处。这个主要用于故障机分析。如果马达震动，而屏不亮，则是lcd问题。
+Q:停在静态logo，或者显示后重启或关机
+A:分析：看手机能否进recovery，能进证明kernel可启动，抓kernel log分析之；不能，则可能是modem侧问题，跟踪之。
+Q:停在动态logo，或者显示后重启或关机
+A:证明可以启动到kernel，关键是获取kernel log。进recovery，用adb 抓下kernel log。如果不行，则用trace抓内存dump，或者修改蓝屏nv项，进蓝屏抓dump。
+Q:手机启动进idle界面后重启
+A:导出bugreport，查看modem是否有err信息。打开蓝屏nv项，进蓝屏抓dump。
+Q:屏不亮的另一个原因，pbl失败
+A:用trace跟踪，查看pc指针位置。pbl运行在0xffff0000-0xffffffff。如果pc指针在这个区间，证明手机pbl运行失败。这种情况下，建议查看flash信息或坏块。
+Q:如何确认board_id读取错误？
+A:board id读取错误，会导致各种基本功能异常，包括屏不亮。定位方法是:adc_read_product_id()中查看board id。
+Q:trace跟踪modem侧错误的方法
+A:如果能进amss，则建议仔细跟踪 tmc_init()，并设置断点：err_fatal_put_internal()和 huawei_reset_chip() watchdog断点。如果是qcsbl或oemsbl，采用二分法确定死机点。
+Q:几个模块的大致内存区间
+A:qcsbl：0x2d4c0000-0x2d540000(0.5M)   osbl：     amss：    kernel：    android：
+Q:自动关机
+A:确认是否为温度、电池电量异常导致，看断点：chg_get_general_status()。
+Q:手机无法上电的另一个方法
+A:连上trace，状态是“power down”，则证明无法上电。
+Q:adb启动工程菜单的命令
+A:am start -n com.android.huawei.projectmenu /. ProjectMenuAct
+Q:nand下查坏块的cmm脚本
+A:drivers/flash/tools/src/nand 或 core/storage/tools/jsdcc/mjsdload.cmm
+Q:android 重启即 system_server 进程被杀掉
+A:android 重启时, 所有java应用都会关闭。但是kernel和守护线程都不动。
+Q:烧片版本如何启动kernel？
+A:烧片版本开机不启动kernel，开机进recovery；若要启动，在QXDM的命令栏输入：send_data 75 0xc9 0x66 0xff，然后手动重启手机。
+
+// 如何抓log？
+// 抓kernel log
+Q:用adb抓kerenl log的命令
+A:（1）cat /proc/kmsg；会持续的打印；（2）dmesg。
+Q:打印所有级别的信息
+A:dmesg -n 8，就可以打印所有级别的信息。
+Q:显示打印级别
+A:/proc/sys/kernel/printk
+Q:重启进蓝屏的开关：nv项
+A:4399->1，905->0。
+Q:手机不重启的情况下如何抓内存dump？
+A:（1）用trace，命令是data.save；（2）扣电池，利用瞬间掉电制造一个重启，也能进蓝屏，抓到的dump是正确的。
+
+// trace抓log
+Q:用trace抓kernel log的方法
+A:d.save.binary 文件名 0x0--0x400000.(内存头64M，kernel log buffer应该在里面)。
+Q:查看flash或emmc错误的trace脚本
+A:nand_page_util.cmm。
+Q:手机进不了idle，怎么知道版本号？
+A:（1）内存dump中有版本号；（2）如果启动不到ap侧，则导出osbl等模块的数据；
+Q:如何找kernel log buffer的地址？
+A:找符号表：out/target/.../obj/kernel_obj/system.map，找 __log_buf，这个是虚拟地址，要转成物理地址，物理地址=0xc09715c0-0xc0000000+0x20000(即128K，即log buffer的长度，可以多加一点。)
+Q:打印指定地址到文件的方法
+A:data.save.binary D:\dump1.txt SD:0x03C26630--0x3D26630
+Q:打印后继续走的断点
+A:可以在断点处打印，也是在condition框中输入如下命令：data.save.binary D:\01.txt  SD:0x0277BB50+200 /BYTE       go
+Q:打印当前窗口的硬拷贝到文件
+A:先设置文件：printer.file D:\01.txt，然后使用 PRinTer.HardCopy 即可把当前Trace窗口内容以文本格式保存。多次 PRinTer，文件名中的数字自动顺延。
+Q:保存变量到文件
+A:wp.v.v %all %m.3 tramp_log，3表示将该变量展开3级。
+Q:wp的其他命令参数
+A:[%<format>] ，index，对于数组，显示索引； hex，显示16进制； all，包括多项格式；s, 显示字符串； m.x,  x = 1~4, 把变量展开的级数。
+Q:如何把堆栈调用输出到文件中？
+A:printer.file D:\01.txt；  wp.V.f /l /c
+Q:将 watch 窗口输出到文件
+A:printer.file D:\01.txt； wp.v.w [%<format>] nand_dload_state;evt (多个变量名用分号分隔)
+
+// 导分区
+Q:通过adb升级一个分区的方法
+A:kernel root后，使用命令： dd if=/data/oemsbl.mbn of=/dev/block/mmcblk0p2。文件是push进去的。
+Q:如何导出emmc的一个分区？（1）
+A:使用命令：dd if=/dev/block/mmcblk0p2 of=/sdcard/oemsbl.mbn。可以把分区数据导入sd卡中。
+Q:如何导出emmc的一个分区？（2）
+A:手机启动到linux的情况下，使用命令：adb shell cat /dev/block/mmcblk0p12 > d:/boot.bin。
+
+// SD卡保存log
+Q:SD卡保存log
+A:有两种界面：工程菜单和lca.apk，功能都差不多。可以抓kernel log、logcat、协议和睡眠log。
+
+// bugreport 
+Q:bugreport的内容
+A:包括软件版本、meminfo、CPU info（top）、kernel log、anr（android异常）、pm log等。
+Q:导出bugreport的方法
+A:用ddms，有文件导出功能。bugreport在 /data中。
+
+// PBL log
+Q:pbl error log的内存地址
+A:27平台上在0xfffeff2c；8x25平台是0xfffefde8。相关高通文档：80-vt483-1。
+Q:pbl error log的结构
+A:每条log16字节，包括4字节行号；4字节文件名指针；4字节pbl版本号；4字节是否进入升级流程的标记位，=1表示进升级。最多放10条。
+Q:pbl error log的trace导出命令
+A:d.dump 0xfffeff2c /long。文件名的地址就放在第二个4字节，到内存中找即可。
+Q:pbl error log的常见错误
+A:pbl_flash.c，即flash识别失败。
+
+// aboot log打印
+Q:如何抓aboot log？
+A:在tmc_init()打个断点，然后将内存中aboot的段（查产品的内存分布图）save下了，然后查找关键字“welcome to lk”。
+
+// 反汇编
+Q:反编译kernel
+A:prebuilt/linux_x86/toolchain/arm_eabi_4.4.3/bin/arm_eabi_objdump -s -d out/target/product/.../kernel_obj/wmlinux >../vmlinux.txt。
+
+// modem F3 log
+Q:modem侧F3 log的机制（1）
+A:在NZI区开辟累32K的buffer（放在nzi区，重启不会清除），当程序调用MSG打印，这些信息保存这这32k中，满的情况下按照FIFO清除到。
+Q:modem侧F3 log的机制（2）
+A:只有log版本才能打开F3。如果所有MSG都打开，32K只能保存几秒的数据。
+Q:modem侧F3 log的机制（3）
+A:只有当FATAL_ERROR发生时，buffer中的数据才会保存到efs中。保存的时机是手机重启后，在tmc_init()中会检测当前这次启动的原因，如果是因为FATAL_ERROR，则保存之。所以手机不能掉电。
+Q:modem侧F3 log的机制（4）
+A:每次重启会保存一个文件，位置在/err下，文件最大数目在nv中配置。高通建议不超过10个，最多255。
+Q:modem侧F3 log的机制（5）
+A:高通原始方案中，msg文件需要同一部手机，并连接QXDM查看。我们自己的方案不用。
+Q:modem侧F3 log文件转为堆栈的方法
+A:需要trace和elf文件。run load_log.cmm；然后load elf文件；进入make文件夹，执行 cat ***.txt | perl cmm.pl > **load.cmm，目的是将log文件转为cmm文件；然后在trac界面下确定。即可。
+Q:临终异样功能
+A:这个功能是华为新增的。当watchdog进入不踢狗重启流程时，先向flash写入一些debug数据，包括重启时间、死机task的名字、堆栈信息等。
+
+// 如何分析log？
+Q:如何在dump中找kernel log的位置？
+A:找关键字：swapper
+Q:如何在dump中找modem死机信息
+A:搜“err crash”，可看到modem死机在哪个文件的拿一行。
+Q:如何分析kernel log？
+A:分析 system_server 任务状态。如果有usb口，wmp获得root的kernel，ps看 system_server 是否存在。
+Q:modem侧死机log如何看？
+A:死机log文件中，由死机原因的描述，典型的有几种：Preftch Abort：程序指针跑飞；Data Abort：内存指针跑飞；Div by Zero：发生除零错误；Unknown sig：某个task收到未定义的信号；Error Fatal：代码进入error FATAL分支（可能是assert）
+Q:最常见的手机为data Abort
+A:在err文件中，查找error file:Data Abort即可确认。处理方式：在hw_reset、boot_error_handle 打断点；断下后，查看stack信息，能看到上下文。
+Q:如何看map文件（只有ps指针查找其函数名）
+A:转map表中，查找包含其地址的那一行。即小于它的最大值，那个函数就是。
+Q:如何看map文件（从ps指针看死在哪一行）
+A:如果map文件打开里代码行信息，则会显示每个函数中各代码行所在的内存地址，这样仅从ps地址就可以知道死在哪一行。
+Q:如何看map文件（看内存的code、ro、rw、zi区）
+A:map文件最后面就是。
+
+// trace命令
+Q:执行trace脚本
+A:do。 eg：do jnand.cmm
+Q:上电
+A:sys.u
+Q:下电
+A:sys.d
+Q:设置内存或寄存器值
+A:d.out。 eg：d.out 0x48000000 %LONG 0x1
+Q:读内存地址的值
+A:d.in 0xffff3200 /long
+Q:设置pc寄存器
+A:r.s pc。 eg：r.s pc 0xffff0000
+Q:设置断点
+A:b.s。  eg：b.s boot_sdram_test
+Q:删除断点
+A:b.d。  eg：b.d /all
+Q:设置变量的值
+A:v。  eg：v hw_ram_test=1
+Q:显示源文化
+A:d.l
+Q:加载文化
+A:d.load。   eg：d.load.elf boot_loader.elf /NOSYMBOL
+Q:进入目录
+A:cd
+Q:打开符号表
+A:y.b
+Q:显示内存地址对应的函数或全局变量
+A:y.l
+Q:查看堆栈窗口
+A:v.l
+Q:查看register窗口
+A:alt+V -> R
+Q:查看watch出口
+A:alt+V -> w
+Q:设备reset
+A:alt+c -> I
+Q:关闭dAbort中断
+A:tronchip.set dAbort off
+Q:添加代码路径
+A:y.spath += ...\drivers\sdcc
+Q:添加工程路径
+A:y.spath.srd=...
+Q:直接执行指定方式
+A:var.call
+Q:断点默认为onchip断点
+A:map.bo
+Q:断点默认为软断点
+A:map.nbo
+Q:内存数据dump
+A:data.dump <addr范围> /format, format 有 byte/word/long三种。定义范围的格式前面有。
+Q:将一处内存copy到另一处
+A:data.copy <addr范围> <addr2>，其中addr2只是起点，将自动覆盖后续内存。
+Q:将指定buffer的数据以图像方式显示（方便camera调试）
+A:data.image <addr> <长> <宽> </format>，其中format有mono、RGB、CGA、palette 256等多种。
+Q:从函数指针查找函数名
+A:右击指针，“display memory” -> “indirect list”。
+Q:查看某个代码的执行时间
+A:"Misc" --> "Runtime"
+Q:查看函数执行的次数
+A:针对只关心是否被调用，或者反复被调用的函数。B.S   sdcc_poll_status\26 /P /ONCHIP /DISABLE /COUNT 100000.
+Q:如何新增cmm命令？
+A:脚本：mjnand.cmm, jnand_addr_init.cmm; 代码：jnand_param.h, jnand.c, jnand_ext_error.h。
+Q:如何看虚存与物理内存的映射？
+A:"ARM" -> "mmu table dump".
+Q:异常复位情况下如何查看堆栈？
+A:一个方法是将spsr的值写入cpsr，如： r.s cpsr 0xF3
+Q:如何调试cmm脚本？
+A:open一个脚本；点debug开始跟踪；单步跟，可以设一个断点。
+Q:如何调试jnand工程代码？
+A:如果需要看jnand工程，则load其elf，设断点 main_c，然后脚本运行到 r.s pc *** 时，代码会断住。
+Q:cmm命令和jnand代码数据结构的对应关系
+A:jnand工程的 struct_jtag_prog_param结构，和脚本中的 &parmstatus, &paramaddr等，一一对应。
+
+// trace脚本
+Q:amss debug 脚本
+A:build\ms\boot_debug.cmm 和 build\ms\jload.cmm
+Q:amss 死机断点
+A:err_fatal_handler、hw_reset。
+Q:下代码的脚本
+A:tools\jsdcc\mjsdload.cmm； 先切换 card slot，9--1； 选择下载的model，11； 输入的id为 AAABQMLY，为build\ms\bin\下的out目录
+Q:trace调试主菜单
+A:boot_debug.cmm
+
+// 快速获得验证结论
+Q:改变运行流程（1）
+A:修改相关函数的返回值，即在函数返回时修改 r0寄存器。
+Q:改变运行流程（2）
+A:B.S hotplug_sd_status\7 /P /ONCHIP /DISABLE /CMD "R.S R0 0" /RESUME     r.s r0 0x1   r.s pc 0x444444
+Q:跳过部分代码。目的是快速获得验证结论。
+A:B.S bt_qsoc_powerup\38 /P /ONCHIP /CMD "r.s pc 0x122d1d2" /RESUME
+Q:直接修改汇编代码
+A:要懂编译命令，然后双击内存dump中的指令位置，修改之。注意我们使用的是Thumb指令集，16位长。
+Q:软硬件联调时，tp不可用怎么办？
+A:可用aatt软件模拟
+
+// log打印的代码
+Q:modem侧指定模块名打印（只打印数字）
+A:MSG_1(MSG_SSID_HWEXT_BREW, MSG_MASK_2, "Modem ptr is @d", diag_state);
+Q:modem侧默认模块名打印（只打印数字）
+A:MSG_HIGH("curr port %d.", port_id);
+Q:modem侧打印字符串
+A:MSG_SPRINTF_1(MSG_SSID_HWEXT_BREW, MSG_MASK_3, "file is %s", file_name);
+Q:kernel代码中如何打印到kernel msg中？
+A:pr_err("emmc_udisk: %s(). \n",__func__);
+Q:kernel如何定义模块级打印？
+A:#define LOG_TAG "OEMINFO"    // 定义 log tag；   #define LOG_NDEBUG 0             // 激活debug 打印；   #include <utils/Log.h>；  #define OEMINFO_MSG(a,b) LOGD(a,b)   // LOGD即为打印接口
+Q:kernel如何调整打印级别?
+A:修改 android\system\core\rootdir\init.rc 文件中的:loglevel 3，默认为3, 修改为7则所有log均打印。更新后要更新bootimage。
+Q:log打印的注意事项
+A:打印时，一定要在行末加换行符"\n"。
+Q:如何避免打印过多？
+A:可通过 printk_ratelimit()来控制打印，如：if(printk_ratelimit()){printf(***)};
+Q:app代码中如何打印到ddms？
+A:SLOGD("dg: %s() enter.", __func__);
+Q:函数如何知道自己的调用者？
+A:使用 _builtin_return_address() 可获得调用者。GCC支持这个宏。
+Q:如何制造系统死机？
+A:8个F法。在定位问题时，有时bug一旦出现，需要系统立即复位，以便保护好第一现场。*(int *)0xffffffff = 0; 任何系统都会挂掉。
+
+// ADB
+Q:ADB常用命令
+A:adb kill-server：停止adb服务； adb devices：列出设备
+Q:ADB虚拟按键
+A:input keyevent 82    // unlock （键值的映射关系可以在framework/base/include/ui/KeycodeLabels.h中查到）
+Q:ADB打印块设备
+A:ls -l /dev/block/
+Q:ADB打印文件(包括设备文件)
+A:cat /proc/app_info
+Q:ADB重启手机
+A:reboot
+Q:ADB打印所有prop属性
+A:getprop
+Q:导出misc分区
+A: adb shell cat /dev/block/mmcblk0p7>d:/misc.bin
+
+Q:如何抓死机dump？
+A:改两个nv项：nv 905 ->0   nv 4399 -> 1；等问题复现后，用Memory Debug App 导出；
+Q:如何分析死机dump？
+A:kernel log 找 “swapper”，modem死机找 “err crash”；panic 信息找“Kernel panic”。
+Q:如何用simulator？
+A:---将T32安装目录下的config.t32复制一份，改名为configSIM.t32
+---configSIM.t32内容PBI=USB 字段改为 PBI=SIM
+---复制trace图标，修改属性为 C:\T32\t32marm.exe -c C:\T32\configSIM.t32
+
+
+Q:apk后台上网导致功耗问题，从ip包中看不出来是哪个apk。怎么办？
+A:ip地址去google查下。
+Q:怀疑apk后台上网导致功耗问题，可以将apn从ctnet切换为ctwap试一下。
+A:如果功耗下来了，就可以确认这个问题。原因是后者不支持一些业务。
+Q:常用的分析问题的办法：
+A:1.三现原则。log也算现场。2.利用dailybuild版本，分而治之。
+Q:统一心跳
+A:应用黑名单/白名单。关闭屏幕时，不唤醒黑名单上的应用，或者只唤醒白名单的应用。目的是节省功耗。
+

@@ -1,0 +1,210 @@
+// english-nc2-5
+// V1.0
+
+$第29课
+Q:largely 
+A:['la:dʒli] ad.在很大程度上
+Q:comic 
+A:['kɔmik] a.喜剧的，可笑的
+Q:universal 
+A:['ju:ni'və:səl] a.普遍的
+Q:comedian 
+A:[kə'mi:djən] n.滑稽演员，喜剧演员
+Q:distasteful 
+A:[dis'teistful] a.讨厌的
+Q:pester 
+A:['pestə] v.一再要求，纠缠
+Q:dread 
+A:[dred] v.惧怕
+Q:recovery 
+A:[ri'kʌvəri] n.康复
+Q:plaster 
+A:['pla:stə] n.熟石膏
+Q:console 
+A:[kən'səul] v.安慰，慰问
+Q:hobble 
+A:['hɔbl] v.瘸着腿走
+Q:compensate 
+A:['kɔmpenseit] v.补偿
+Q:mumble 
+A:['mʌmbl] v.喃喃而语
+$第30课
+Q:labourer 
+A:['leibərə] n.劳动者(也做laborer)
+Q:overnight 
+A:['əuvənait] ad.一夜期间
+Q:hay 
+A:[hei] n.干草
+Q:corn 
+A:[kɔ:n] n.谷物
+Q:moonlight 
+A:['mu:nlait] n.月光
+Q:conscientious 
+A:['kɔnʃi'enʃəs] a.认真的
+Q:suspect" 
+A:[səs'pekt] 
+Q:] 'sʌspekt] "v.怀疑
+Q:desert 
+A:['dezət, di'zə:t] v.(军队中)开小差
+Q:regiment 
+A:['redʒimənt] n.(军队)团
+Q:action 
+A:['ækʃən] n.战斗
+Q:recluse 
+A:[ri'klu:s] n.隐士
+$第31课
+Q:lovable 
+A:['lʌvəbl] a.可爱的
+Q:eccentric 
+A:[ik'sentrik] n.(行为)古怪的人
+Q:disregard 
+A:['disri'ga:d] v.不顾，无视
+Q:convention 
+A:[kən'venʃən] n.习俗，风俗
+Q:conscious 
+A:['kɔnʃəs] a.感觉到的，意识到的
+Q:invariably 
+A:[in'vɛəriəbli] ad.总是，经常地
+Q:routine 
+A:[ru:'ti:n] n.常规；惯例; a.常规的
+Q:shrewd 
+A:[ʃru:d] a.精明的
+Q:eccentricity 
+A:['eksen'trisiti] n.怪癖
+Q:legendary 
+A:['ledʒəndəri] a.传奇般的
+Q:snob 
+A:[snɔb] n.势利小人，谄上欺下的人
+Q:intensely 
+A:[] ad.强烈地
+Q:bedraggled 
+A:[bi'drægld] a.拖泥带水的；又脏又湿的
+Q:dump 
+A:[dʌmp] v.把……砰的一声抛下
+Q:apologetic 
+A:[əpɔlə'dʒetik] a.道歉的
+Q:reprimand 
+A:['reprima:nd] v.训斥
+Q:stage 
+A:[steidʒ] v.暗中策划
+Q:elaborate 
+A:[i'læbərit] a.精心构思的；精致的
+$第32课
+Q:salvage 
+A:['sælvidʒ] v.] n.救助，营救，打捞;
+Q:Barents 
+A:['bærənts] n.巴伦支(海)
+Q:sunken 
+A:['sʌŋkən] a.沉没的
+Q:cargo 
+A:['ka:gəu] n.货物
+Q:bullion 
+A:['buljən] n.金条；银条
+Q:scour 
+A:['skauə] v.彻底搜索
+Q:chest 
+A:[tʃest] n.大箱子
+Q:contents 
+A:[] n.(复数)所装的东西
+Q:belongings 
+A:[bi'lɔŋiŋz] n.(复数)所有物
+Q:item 
+A:['aitəm] n.物件
+Q:cruiser 
+A:['kru:zə] n.巡洋舰
+Q:find 
+A:[faind] n.找到的物品
+Q:log book 
+A:[] 航海日志
+Q:piece 
+A:[pi:s] v.拼成整体
+Q:convoy 
+A:['kɔnvɔi] v.] n.护航
+Q:torpedo 
+A:[tɔ:'pi:dəu] v.用鱼雷攻击
+Q:submarine 
+A:['sʌbməri:n] n.潜水艇
+Q:naval 
+A:['neivəl] a.海军的
+Q:ministry 
+A:['ministri] n.(政府的)部
+$第33课
+Q:prelude 
+A:['prelju:d] n.序幕，前奏
+Q:unforeseen 
+A:['ʌnfɔ:'si:n] a.意料之外的
+Q:series 
+A:['siəri:z] n.系列
+Q:catastrophe 
+A:[kə'tæstrəfi] n.大祸，灾难
+Q:crockery 
+A:['krɔkəri] n.陶器，瓦器
+Q:suburb 
+A:['sʌbə:b] n.郊区
+Q:collide 
+A:[kə'laid] v.猛撞
+Q:learner 
+A:['lə:nə] n.初学者
+Q:panic 
+A:['pænik] n.惊慌，恐慌
+Q:windscreen 
+A:[] n.(汽车的)挡风玻璃
+Q:alongside 
+A:[ə'lɔŋ'said] prep.在……的旁边，与……并排
+Q:slide 
+A:[slaid] v.滑；回避
+Q:stray 
+A:[strei] a.迷失的，离群的；v.迷路，偏离
+Q:confusion 
+A:[kən'fju:ʒən] n.混乱
+Q:greedily 
+A:['gri:dili] ad.贪婪地
+Q:devour 
+A:[di'vauə] v.狼吞虎咽地吃
+$第34课
+Q:antique 
+A:[æn'ti:k] n.古董，古玩
+Q:fascination 
+A:['fæsi'neiʃən] n.魅力，迷惑力
+Q:forbidding 
+A:[fə'bidiŋ] a.望而生畏的，望而却步的
+Q:muster 
+A:['mʌstə] v.鼓起
+Q:pretentious 
+A:[pri'tenʃəs] a.自命不凡的，矫饰的
+Q:labyrinth 
+A:['læbərinθ] n.迷宫
+Q:musty 
+A:['mʌsti] a.陈腐的，发霉的
+Q:rarity 
+A:['rɛəriti] n.稀世珍品
+Q:assorted 
+A:[ə'sɔ:tid] a.各式各样的
+Q:junk 
+A:[dʒʌŋk] n.破烂货，废品
+Q:carve 
+A:[ka:v] v.镌刻
+Q:dagger 
+A:['dægə] n.短剑，匕首
+Q:litter 
+A:['litə] v.杂乱地布满；n.垃圾
+Q:dedicated 
+A:['dedikeitid] a.专心致志的；全身心投入的
+Q:bargain hunter 
+A:[] n.到处找便宜货买的人
+Q:dealer 
+A:['di:lə] v.商人
+Q:cherish 
+A:['tʃeriʃ] v.期望，渴望；珍爱
+Q:amply 
+A:['æmpli] ad.足够地
+Q:masterpiece 
+A:['ma:stəpi:s] n.杰作
+Q:mere 
+A:[miə] a.仅仅的
+Q:prize 
+A:[praiz] a.珍贵的，宝贵的
+Q:miniature 
+A:['minjətʃə] a.小巧的，小型的
+Q:composition 
+A:['kɔmpə'ziʃən] n.构图

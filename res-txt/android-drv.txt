@@ -1,0 +1,223 @@
+// HAL层 android系统
+// V0.8
+
+// HAL层的代码如何被调？
+Q:HAL层代码如何被调？
+A:hal层代码编译成.so文件，然后被framework代码动态加载的。
+Q:HAL层代码编译成什么？
+A:.so文件。存放路径如下：#define HAL_LIBRARY_PATH "/system/lib/hw"。文件名类似：camera.msm7630.surf.so 和 nfc.huawei.so。
+Q:如何调用这些so文件？
+A:代码中调用是通过HAL_MODULE_INFO_SYM结构, 这些so文件会依据该结构来编译，保证开始几个字段在固定的位置。
+Q:那么多so文件如何寻地址？
+A:通过宏。#define CAMERA_HARDWARE_MODULE_ID "camera" 来定位。->camera_common[] -> camera_module_methods[]。
+
+// HAL层原理
+Q:HAL层代码都是动态链接库
+A:android HAL层是用户态进程访问硬件的标准接口，比如framework需要用overlay，就通过给 hw_get_module()传入字符串“overlay_module”，取得该设备的标准模块的描述，
+Q:HAL实现抽象
+A:有人实现了overlay，不管是软件加速，还是硬件加速，是基于v4l2，还是基于mmap接口，只要实现成overlay_module的样子就成，这样就“抽象”了。
+Q:如何拼接文件名？
+A:hw_get_module()通过libdl动态加载库文件。如果寻址？路径和文件名找：/system/lib/hw/[id].[arch].so，id即设备的id，例如“overlay_module”，arch即系统属性中的平台id。
+Q:如何从文件获取函数指针？（1）
+A:每个so库都要实现标准接口，这个标准即 HAL_MODULE_INFO_SYM，其中定义了一些属性，但要求必须实现的接口只有一个：open()。
+Q:如何从文件获取函数指针？（2）
+A:文件找到后，调用dlopen()打开，再找 HAL_MODULE_INFO_SYM变量，变量中有统一的入口 open()。后面的机制就很清楚了。
+Q:常见的HAL设备名
+A:传感器：sensors_hardware_*; 图形buffer：Gralloc_*; 图层叠加：Overlay_*; 显示控制：Display_*; 灯：Lights_*。
+Q:例外情况
+A:也不是所有地方都用HAL，电池就不用，因为power是linux内核标准服务，JNI就直接访问内核服务了。
+Q:库访问接口：dlopen()
+A:根据文件名，打开so库文件，返回值为模块操作句柄。
+Q:库访问接口：dlsym()
+A:根据模块操作句柄及符号名，返回符号对应的地址。不仅可以返回函数指针，也可以获得全局变量的地址。
+Q:库访问接口：dlclose() 和 dlerror()
+A:dlclose():关闭库文件。 dlerror()当操作函数执行失败时，可通过此接口返回出错信息。
+Q:为什么HAL层代码不允许函数重载？
+A:不知道，有这个说法吗？ // todo
+Q:多款器件的so文件如何区别和寻地、址？
+A:// todo
+
+// Bionic
+Q:Bionic的特点（1）
+A:1.google开发的c语言库，采用BSD许可形式开源，目的是替代以GPL开源的glibc；2.大小仅200KB，是glibc的一半，且比glibc快。
+Q:Bionic的特点（2）
+A:3.实现了一个更小、更快的pthread；4.提供了一些android需要的函数，如getprop、LOGI；
+Q:Bionic的特点（3）
+A:5.不完全支持POSIX标准，如C++ exceptions、wide chars等；6.不提供libthread_db和libm的实现。
+
+// android启动流程
+Q:android启动流程（1）
+A:aboot启动kernel
+Q:aboot代码
+A:代码在 bootable/bootloader/lk。lk意思是light kernel，为高通开发，因为组织良好，被很多芯片组采用。nand版本叫 appsboot.mbn，emmc版本叫 emmc_appsboot.mbn。
+Q:aboot的功能
+A:fastmode：停在aboot等待后台命令； recovery和FTM模式：启动recovery； 其它：启动kernel。
+Q:aboot代码入口
+A:/bootable/bootloader/lk/app/aboot/aboot.c，aboot_init()。
+Q:fastboot
+A:按方向上键+power开机，系统进入fastboot模式。eg：fastboot flash boot boot.image。
+Q:fastboot新增命令
+A:该模式中可以用的命令，通过 fastboot_register()来注册。
+Q:recovery代码入口
+A:/bootable/recovery/recovery.c。
+Q:kernel启动第一个进程：init进程
+A:这是kernel的第一个进程，完成设备初始化，启动framework需要的各个daemon、ContextManager、MediaManager、Zygote等。
+Q:哪些daemon？
+A:vold、rild、netd、adbd、btld等。
+Q:ContextManager
+A:是管理android系统服务的进程，系统服务是framework的重要组件，负责提供各种API。
+Q:系统服务
+A:系统启动时，所有的系统服务都把自己注册到ContextManager。apk和framework内部模块在调用系统服务时，需要先向ContextManager申请，而后通过 Binder IPC调用该服务。
+Q:MediaManager
+A:用于运行c/c++本地系统服务，比如AudioManager、Camera等。
+Q:Zygote
+A:是所有apk进程的父进程。当apk启动时，Zygote会派生一个linux进程来跑java虚拟机，然后apk会跑在该虚拟机上。为什么要派生，是为了加快进程初始化的速度。
+Q:system server
+A:是android的核心进程，由Zygote创建。android的大部分服务，如 Activity Manager、location Manager等，都是由它创建。java系统服务都运行于 system server中。
+
+// 关机流程
+Q:关机流程（1）
+A:关机流程从kernel log可看出，power down。
+Q:关机流程（2）
+A:SYSCALL_DEFINE4，这是kernel总的reboot和shut down的接口。
+Q:关机流程（3）
+A:kernel_power_off()，关机流程基本都在这个函数里面。
+Q:关机流程（4）
+A:kernel_shutdown_prepare()，关闭device。log：device_shutdown, dev name=platform。
+Q:关机流程（5）
+A:machine_power_off() -> msm_pm_power_off()，进行下电操作。其中调用了 msm_rpcrollter_close()，关闭rpc。
+
+// 其它
+Q:android代码中，hardware代码这个目录是干吗的？
+A:硬件相关，比如camera什么的。
+Q:build.prop这个文件做什么？
+A:是一个属性文件，在android编译时收集的各种property，比如语言、编译时间、LCD大小等之内。这个文件底层和上层都可以自己访问，所以比较方便。
+Q:linux c++代码中的一些特殊代码（1）
+A:wp、sp这些是智能指针；
+Q:linux c++代码中的一些特殊代码（2）
+A:string8.h 是定义单字节字符串的类；并提供从 string16 转换的接口。
+Q:linux c++代码中的一些特殊代码（3）
+A:keyedvector.h，定义hash向量表模板，用key（字符串）随机访问数据。
+
+// 编译和代码结构
+Q:kernel 中加特性宏
+A:（1）android\kernel\arch\arm\configs\hw7x30_defconfig ， CONFIG_HUAWEI_FEATURE_OEMINFO=y ； （2）android\kernel\arch\arm\mach-msm\Kconfig，
+Q:只编译 kernel的开关
+A:./build_7x30_android.sh  bootimage
+Q:如何编译带root权限的kernel？
+A:编译命令中加 - eng即可。
+Q:添加ap模块如何编译？
+A:找同目录的  Makefile，在末尾添加一行：obj-y += rmt_oeminfo_server.o
+Q:如何在ap侧创建一个自启动的进程？
+A:修改system\core\rootdir\init.rc，在最后面加一行，即：service rmt_oeminfo /system/bin/rmt_oeminfo，init.rc在boot.img中。
+Q:高通原始工程编译方法
+A:先执行rvct22.bat，然后是aabbrmlym.cmd。
+Q:如何修改vold.conf?
+A:android\system\core\rootdir\etc\msm7630_surf\vold.qcom.conf。
+
+// oprofile
+Q:oprofile
+A:linux性能监控工具，特点是小巧，对运行影响小。android有一个简化的实现。
+Q:oprofile代码位置
+A:手机侧：/external/oprofile，负责收集数据；pc-linux侧，/prebuild/linux_x86/oprofile，负责分析数据。
+Q:oprofile使用方法（1）
+A:先打开宏：CONFIG_OPROFILE=Y，编译系统生成boot.img，下载到手机侧。
+Q:oprofile使用方法（2）
+A:用adb使能功能：opcontrol等工具，手机数据；然后将数据pull 回pc，数据在/data/oprofile/；
+Q:oprofile使用方法（3）
+A:使用PC工具:opimport、opreport等进行分析。
+
+// linux学习方法
+Q:linux学习方法（1）
+A:Linus说过：要先学会使用它。
+Q:linux学习方法（2）
+A:KCONFIG、Makefile、Readme文件，这是linux世界的地图。
+Q:linux学习方法（3）
+A:到看c代码文件时，从module_init()入口开始；类似入口还有：subsys_initcall()，子系统入口。
+
+// RPC
+Q:RPC
+A:RPC即远程进程调用，由SUN发明。目的是实现对远程（不同地址空间、异层、异核或网络另一侧）的进程进行封装，以便象调用本地进程的方式（即同一地址空间的函数调用）那样去调用。
+Q:RPC与XDR
+A:XDR为有效数据，RPC提供数据传输通道。请求包由client（即调用方）打成m'tXDR，然后通过RPC传输到server（即被调方）拆包；响应包由server打成XDR，然后client拆包。
+Q:如何定义一个RPC调用？
+A:包括名字（一般大写字母）、版本号、ID（32位数字）。
+Q:版本号
+A:版本号是个很好的机制，可让多个同名的RPC调用并存，于是提供了运行时链接的功能。
+Q:RPC ID
+A:我们只可以用0x20000000-0x2FFFFFFF之间的ID，其它ID由系统预留。
+Q:每个rpc调用都有个xid字段
+A:用于当前rpc的replay的id，xid独自排，自增一。
+Q:RPC框架
+A:rpc工具为client生成一个proxy模块，为server生成一个stub模块。所有的打包拆包的工作都由proxy和stub完成。这样，对client来说，调用这些函数和调用普通函数没有区别。
+Q:RPC定义文件
+A:RPC定义文件一般为**.x，扩展名为x。用rpcgen -c **.x来编译。生成 **.h，**_client.c, **_svc.c 三个文件。
+Q:AIDL语言
+A:RPC系统一般都会定义自己的接口定义语言（IDL），android上的叫aidl，语法和java类似。例如：interface IMyInterface {int getData(int a);}
+Q:AIDL如何编译？
+A:用tools 目录下的aidl.exe编译，编译结构是IMyInterface，以及内镶类 proxy和stub。
+
+Q:核间通讯（1）
+A:android上的rpc方案有两个应用场景：一是核间通讯，即ap核和modem核之间通讯用；另外一个是java进程、framework模块间的通讯用，即大名鼎鼎的Binder。
+Q:核间通讯（2）
+A:核间通讯，modem侧为server，ap侧为client侧。ap调用modem叫request，modem调ap叫call。
+Q:核间通讯（3）
+A:ap侧进程和modem侧的task之间通讯。发起request之前，要知晓modem侧对应的task，一般如hs、cm、diag等。modem侧提供rpc接口的task只有10几个。
+Q:核间通讯（4）
+A:ap侧的request，统一发给modem的RPC_router，它是一个task，功能是完成rpc的分发。
+Q:核间通讯（5）
+A:高通实现的rpc有个局限，只能同步，不能异步。即ap侧调用send_request()，就必须wait在那里。这个很容易造成阻塞。
+Q:核间通讯（6）
+A:为保证rpc在两侧都能得到正常处理，系统提供了两个硬件中断：A2M中断和M2A中断，当共享内存有数据时就会触发。
+Q:核间通讯（7）
+A:基本流程1：AP request -> AP write -> modem read -> modem write(reply) -> AP read.
+Q:核间通讯（8）
+A:基本流程2：modem call -> modem write -> AP read -> AP write(reply) -> modem read.
+Q:核间通讯（9）
+A:rpc对share memory的使用：2M size，分为64个channel，每channel为8K-head size。
+Q:核间通讯（10）
+A:rpc调用中，modem为service，ap为client，部分modem发起的请求，采用ap注册回调的方式。
+
+Q:IBinder（1）
+A:IBinder是android上提供的一个基本的进程间通讯接口，即RPC。主要用于app和framework层的进程间通讯。
+Q:IBinder（2）
+A:Binder的user space代码为每个进程维护了一个可用的线程池，以便来处理RPC请求；而kernel space代码，负责在进程间传递RPC请求。
+Q:IBinder（3）
+A:一个IBinder代表一个远程对象。server需要写一个实现IBinder接口的Remote class，并将该class通过AddService()注册到ServiceManager。
+Q:IBinder（4）
+A:ServiceManager从逻辑上讲是一个跨进程的存储区，调用ServiceManager.AddService(string Name, IBinder Service)可将一个IBinder与name字符串绑定。
+Q:IBinder（5）
+A:然后，client调用ServiceManager.GetService(string Name)，即可通过字符串获取对应的IBinder。然后调用其TransAct()真正发起IBinder(RPC)调用。
+Q:IBinder（6）
+A:IBinder对象的最重要的一个函数是IBinder.TransAct(int code, Parcel data, Parcel reply, int flag); 4个参数将被发给server所在的进程。
+Q:IBinder（7）
+A:上述过程看起来是client直接调用了remote class，但实际上是一些消息发送。我们可以把remote class理解为一个消息队列。而就操作系统层面，函数调用和消息发送并无实质性区别。
+Q:IBinder（8）
+A:在user space，open一个Binder，相当于打开“/dev/binder”，然后通过该节点的ioctl接口传入命令。
+Q:IBinder（9）
+A:ioctl()接口的参数包括三个：fd，文件句柄；cmd，命令字；args，参数和返回值。代码：binder_module.h。
+Q:IBinder（10）
+A:其中命令字有4种，BINDER_WRITE_READ，Binder读写（主要命令）；BINDER_SET_IDLE_TIMEOUT，设置请求超时；BINDER_SET_REPALY_TIMEOUT，设置reply超时；BINDER_SET_MAX_THREADS，设置线程池容量。代码：binder.h。
+Q:IBinder（11）
+A:由于有返回值，所以一旦write之后，必须有read操作，所以这两个动作放在一个命令中。
+Q:IBinder（12）
+A:kernel space中，/dev/binder有如下接口：binder_open、binder_ioctl、binder_mmap(内存映射，将Binder对象从内存映射到用户空间)、binder_flush(将处在等待中的进程唤醒并返回)。代码：binder.c。
+Q:IBinder（13）
+A:具体流程如下：binder_open()进行初始化；binder_ioctl()对命令字进行解析和分发；
+Q:IBinder（14）
+A:如果是BINDER_WRITE_READ，则调用 binder_thread_write()，后者对命令进一步解析，发现cmd为bcTransaction，即发起IPC transaction，则将参数 binder_transaction_data 复制到内核空间。
+Q:IBinder（15）
+A:binder_transaction()根据binder_transaction_data中的target字段可寻出被调者的进程，从该进程的缓冲区中选择一个处在wait for ioctl的线程，将binder_transaction_data复制给它，并唤醒它。
+Q:IBinder（16）
+A:被调者用户线程执行相应指令。然后将执行结果写入新的binder_transaction_data中，通过ioctl发给内核，即发起一个新的transaction。
+Q:IBinder（17）
+A:内核将结果写入调用者线程的buffer中，唤醒该线程。调用者得到结果。
+Q:IBinder（18）
+A:Binder可以传递对象引用。传递过程中，内核负责将其添加到对象映射表中。
+Q:IBinder（19）
+A:server进程收到rpc调用，则从线程池中选择一个线程处理rpc请求，包括cmd和reply两个过程。内核收到reply后，将其传给client。
+
+
+
+
+

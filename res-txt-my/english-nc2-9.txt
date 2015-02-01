@@ -1,0 +1,234 @@
+// english-nc2-9
+// V1.0
+
+$第47课
+Q:pollution 
+A:[pə'lu:ʃən] n.污染
+Q:overpopulated 
+A:[ˌəuvəˈpɔpjəleitəd] a.人口多的
+Q:over-industrialized 
+A:[inˈdʌstriəlaizd] a.过度工业化的
+Q:sheer 
+A:[ʃiə] a.纯粹的，不掺杂的
+Q:worldwide 
+A:['wə:ldwaid] ad.在全世界
+Q:overwhelm 
+A:['əuvə'hwelm] v.制服，使不知所措
+Q:pollute 
+A:[pə'lju:t] v.污染
+Q:pesticide 
+A:['pestisaid] n.杀虫剂
+Q:fertilizer 
+A:['fə:tilaizə] n.肥料
+Q:salmonella 
+A:[sælmə'nelə] n.沙门氏菌
+Q:listeria 
+A:[] n.利斯特杆菌
+Q:vegetarian 
+A:[vedʒə'tɛəriən] n.吃素的人
+Q:organically-grown 
+A:[] a.有机培植的(不施化肥和其他化学药品培植)
+Q:insidious 
+A:[in'sidiəs] a.暗中为害的
+Q:urban 
+A:['ə:bən] a.城市的
+Q:burglar 
+A:['bə:glə] n.窃贼
+Q:burgle 
+A:['bə:gl] v.入室偷窃
+Q:scream 
+A:[skri:m] v.尖叫
+Q:profound 
+A:[prə'faund] a.极度的
+Q:irritation 
+A:['iri'teiʃən] n.烦躁
+Q:incessantly 
+A:[] ad.连续不断地
+Q:whine 
+A:[wain] v.发呜呜声
+Q:helicopter 
+A:['helikɔptə] n.直升飞机
+Q:maximum 
+A:['mæksiməm] a.最大的
+Q:technology 
+A:[tek'nɔlədʒi] n.技术
+Q:contribution 
+A:['kɔntri'bju:ʃən] n.贡献
+Q:mobile 
+A:['məubail] a.可移动的
+Q:snore 
+A:[snɔ:] v.打鼾
+Q:offender 
+A:[ə'fendə] n.冒犯者
+Q:staggering 
+A:['stægəriŋ] a.令人惊愕的
+Q:trumpet 
+A:['trʌmpit] v.吹号
+Q:partner 
+A:['pa:tnə] n.伙伴
+$第48课
+Q:inaccessible 
+A:[inæk'sesəbl] a.难接近的，达不到的
+Q:hospitable 
+A:['hɔspitəbl] a.好客的
+Q:hostile 
+A:['hɔstail] a.不友好的，有敌意的
+Q:vicinity 
+A:[vi'siniti] n.周围,附近
+Q:architectural 
+A:['a:ki'tektʃərəl] a.建筑的
+Q:fresco 
+A:['freskəu] n.壁画
+Q:abruptly 
+A:[ə'brʌptli] ad.突然地，意外地
+Q:tramp 
+A:[træmp] v.徒步行进
+Q:moor 
+A:[muə] v.(用绳、链、锚)系(船)
+Q:ferry 
+A:['feri] n.渡船
+Q:straggle 
+A:[strægl] v.蔓延，散乱分布
+Q:dilapidated 
+A:[di'læpideitid] a.陈旧破烂的，倒塌的
+Q:sardine 
+A:[sa:'di:n] n.沙丁鱼，沙丁鱼罐头
+Q:rag 
+A:[ræg] n.破烂衣服
+Q:motionless 
+A:['məuʃənlis] a.不动的
+Q:procession 
+A:[prə'seʃən] n.行列，成队的人群
+Q:shawl 
+A:[ʃɔ:l] n.披巾，围巾
+Q:peer 
+A:[piə] v.凝视，盯着
+Q:quicken 
+A:['kwikən] v.加快
+$第49课
+Q:rambling 
+A:['ræmbliŋ] a.杂乱无章的
+Q:sentimentally 
+A:[] ad.感情上，多情地
+Q:lavishly 
+A:['læviʃli] ad.慷慨地，大方地
+Q:immaculate 
+A:[i'mækjuleit] a.清洁的，无污点的
+Q:parquet 
+A:[pɑ:'kei] n.镶木地板
+Q:gleam 
+A:[gli:m] v.发亮，闪光
+Q:preside 
+A:[pri'zaid] v.指挥
+Q:invisible 
+A:[in'vizəbl] a.看不见的，无形的
+Q:scrub 
+A:[skrʌb] v.擦拭，刷洗
+Q:enlightened 
+A:[in'laitnd] a.开明的，教化的
+Q:fickleness 
+A:[] n.变化无常
+Q:unrelenting 
+A:['ʌnri'lentiŋ] a.不屈不挠的，不松懈的
+Q:disillusion 
+A:[disi'lu:ʒən] v.使幻想破灭
+Q:industriousness 
+A:[] n.勤奋
+Q:qualification 
+A:['kwɔlifi'keiʃən] n.资格，能力
+Q:mirth 
+A:[mə:θ] n.欢笑，高兴
+Q:stack 
+A:[stæk] v.(整齐地)堆放，排放；n.堆
+Q:cellar 
+A:['selə] n.地窖
+$第50课
+Q:resolution 
+A:['rezə'lju:ʃən] n.决心
+Q:mentally 
+A:['mentli] ad.内心里
+Q:compile 
+A:[kəm'pail] v.编辑，编制
+Q:formidable 
+A:['fɔ:midəbl] a.令人畏惧的
+Q:recur 
+A:[ri'kə:] v.再发生，又出现
+Q:regularity 
+A:['regju'læriti] n.规律性
+Q:accomplishment 
+A:[ə'kɔmpliʃmənt] n.成就
+Q:attainment 
+A:[ə'teinmənt] n.达到；成就，造诣
+Q:inveterate 
+A:[in'vetərit] a.根深蒂固的
+Q:self-improvement 
+A:[] n.自我完善
+Q:scheme 
+A:[ski:m] n.简单的计划，方案
+Q:ambitious 
+A:[æm'biʃəs] a.雄心勃勃的
+Q:pitfall 
+A:['pitfɔ:l] n.意外的困难，易犯的错误
+Q:modest 
+A:['mɔdist] a.要求不过分的,谦虚的
+Q:assiduously 
+A:[] ad.刻苦地
+Q:self-discipline 
+A:[] n.自我约束
+Q:frame 
+A:[freim] n.躯体
+Q:betray 
+A:[bi'trei] v.暴露，显露
+Q:troop 
+A:[tru:p] v.成群结队地走动
+Q:unsettle 
+A:[ʌn'setl] v.使不安
+Q:taunt 
+A:[tɔ:nt] n.] v.嘲笑，奚落人的话
+Q:jibe 
+A:[dʒaib] n.嘲弄，挖苦
+Q:good-humouredly 
+A:[] ad.和气地，心情好地
+Q:wane 
+A:[wein] v.逐渐变小，变弱
+Q:diminish 
+A:[di'miniʃ] v.减少，缩小
+Q:hypnotize 
+A:['hipnətaiz] v.使欲睡，使朦胧
+Q:undoing 
+A:[ʌn'du:iŋ] n.祸根，毁灭的原因
+Q:screen 
+A:[skri:n] n.电视机屏幕
+$第51课
+Q:full-time 
+A:[] a.专职的
+Q:technician 
+A:[tek'niʃən] n.技师
+Q:software 
+A:['sɔftwɛə] n.软件
+Q:IBM 
+A:[] 国际商用机器公司
+Q:DOS 
+A:[] 磁盘操作系统(Disk Operating System)
+Q:Microsoft 
+A:[] n.(美国)微软公司
+Q:user-friendly 
+A:[] a.容易操作的，好用的
+Q:multimedia 
+A:[] a.多媒体的
+Q:alternative 
+A:[ɔ:l'tə:nətiv] a.选择的
+Q:diagnose 
+A:['daiəgnəuz] v.诊断
+Q:relieve 
+A:[ri'li:v] v.减轻
+Q:accountant 
+A:[ə'kauntənt] n.会计
+Q:repetitive 
+A:[ri'petitiv] a.重复的
+Q:clerical 
+A:['klerikəl] a.办公室工作的
+Q:Internet 
+A:[] n.国际交互网
+Q:network 
+A:['netwə:k] n.网络

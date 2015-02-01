@@ -1,0 +1,189 @@
+// rex 编译 boot
+// V0.8
+
+Q:智能手机哪些模块放在modem侧？
+A:升级、音频、充电、lcd驱动（显示logo）、部分GPIO（但是到ap侧会重新配置）、待机。
+
+// 编译
+Q:编译amss
+A:build_7x30_emmc.cmd
+Q:只编译 osbl 的开关
+A:corebsp_build_action
+Q:modem 侧添加新模块
+A:AMSS\products\7x30\core 目录下的模块都使用 SConscript 新的编译系统.
+Q:多线程编译开关
+A:-j 3（起3个线程），如果链接失败，请单线程重新编一下。经验证明，用n+1比较稳定，n为服务器核数。
+Q:编译出错后继续编译的开关
+A:-k。
+
+// rex系统下的编译系统
+Q:如何知道要编译哪些.c？它们在哪里？
+A:通过各模块的_objs.min，路径通过vpath命令实现，如：vpath %.c ../..services/efs，.h、.s都如此定义。
+Q:如何找自己include的.h文件？
+A:通过_incpaths.min，编译器会生成一个大的头文件路径集合，路径宏的定义也在这里。
+Q:如何将.o文件连接起来？
+A:通过cc命令编译 ARMCC=armcc，通过link命令连接。
+Q:如何在编译命令中实现功能宏的打开关闭？
+A:通过 _flags.min定义。
+Q:如何定义内存规划，以及各section的定义？
+A:通过 _nand.scl。
+Q:各模块的.min文件如何集中？
+A:dmss_objects.min。
+Q:make中定义与使用变量
+A:objects=main.o display.o ... ;  edit:$(objects)
+Q:make文件采用依赖关系来管理编译树
+A:信赖关系的定义就是用 :（冒号）来定义。
+
+// 启动流程
+Q:emmc下启动流程1
+A:1.PBL detects eMMC and loads MBR into IMEM；2.Based on MBR, PBL reads DBL into IMEM；
+Q:emmc下启动流程2
+A:3.DBL loads OSBL into SDRAM from eMMC； 4.OSBL increases clock speed； 
+Q:emmc下启动流程3
+A:5.OSBL uses hotplug APIs to read modem AMSS, appsbl, and application AMSS images into RAM primarily
+Q:emmc下启动流程4
+A:6.OSBL creates RAM EFS file system in shared memory and copies contents of modem storage partition into RAM EFS file system
+Q:trust boot
+A:如果激活trust boot，则手机手机上电时，从msm芯片内的rom中固化的PBL模块开始执行。PBL的源代码和bin文件高通都不会提供。
+Q:不激活trust boot的情况是：
+A:上电后，搬移nand flash的第一个block到msm内部的ram中执行（即和6245平台一样），此时，boot代码由用户自己负责，高通不推荐。华为选择用trust boot。
+Q:secure boot
+A:使能secure boot后，启动时，PBL对qcsbl，qcsbl对oemsbl和amss进行认证。密钥和认证算法来自GEO Trust公司。
+Q:secure boot的其他情况
+A:每部手机都要缴费。二进制包要在GEO网站上签名，每次都要签。华为只有在客户需要时才使能这个功能。
+Q:两种boot的关系
+A:trust boot可单独使用；secure boot依赖trust boot。
+
+// 开机原因处理
+Q:开机种类
+A:按power键、闹钟、充电线插入
+Q:重启种类
+A:只有两种：不踢狗重启、瞬间掉电重启
+Q:不踢狗重启是软件能控制的重启，分为：
+A:关机菜单、SD卡升级、USB升级、NV恢复、恢复出厂设置、死机、ADB reboot命令、QXDM重启命令等。
+Q:SMPL：瞬间掉电重启
+A:开机时会设置 SMPL timer：pm_set_smpld_timer()，时间为2秒。然后使能：pm_smpld_switch(PM_OFF_CMD);
+Q:烧片版本会关闭SMPL
+A:目的是避免影响烧片流程。
+Q:modem侧关机处理入口
+A:tmc_powerdown_handler()
+Q:开机原因处理
+A:在oemsbl中，在check_pwron_conditions()来判断。目的是避免短按开机。
+Q:有如下几种开机原因
+A:PM_VALID_CHG_IRQ_HDL(充电器开机)、**_USB_CHG_**(USB开机)、**_RTC_ALRM_**(闹钟开机)、**_SMPL_**(瞬间掉电)、**_WDOG_TOUT_**(watchdog超时重启)
+Q:长按开机
+A:长按的指标是2秒。计时方式是oemsbl load amss的page数量。emmc上是10000 page；nand是4000。超过这个数，即认为是长按，正常开机。
+Q:充电器或USB插入开机
+A:则系统进入recovery关机充电界面。
+Q:PS_HOLD
+A:ps_hold是一个硬件管脚，功能是通过pmic芯片管控基带芯片电源使能的。
+Q:PS_HOLD上电过程
+A:触发任何开机事件时，pmic都会自动给基带芯片上电，但如果300ms内，基带软件没有将ps_hold拉高，则pmic会认为基带芯片运行异常，而将基带芯片下电。
+Q:PS_HOLD下电过程
+A:关机时，软件将ps_hold拉低，然后pmic将基带芯片下电。
+Q:PS_HOLD相关代码
+A:上电拉高：boot_hw_tlmn_init()；下电拉低：boot_hw_powerdown()。
+Q:reset异常
+A:当处理器的复位电平有效时，产生复位异常。
+
+// task相关
+Q:task优先级
+A:task优先级在task.h中定义，每个task优先级都不同。
+Q:tcb
+A:task控制块。
+Q:rex内核的任务调度
+A:基于优先级、不分时、非抢占式的调度。调度依赖于各task自发放弃cpu时间，否则会触发dog不踢狗重启。
+Q:任务调度的时机
+A:两个时机：（1）中断返回时；（2）当前task自动放弃CPU，自我阻塞。
+Q:调度优先级
+A:调度优先级顺序是：FIQ > IRQ > task。FIQ只有一种优先级，当前系统中并没有使用。IRQ内部有7种优先级。
+Q:堆栈
+A:每个task都有自己的stack，FIQ、IRQ也有，以便在任务切换时保存寄存器的上下文。
+Q:任务调度程序
+A:rex_sched()即可。
+Q:clk_busy_wait()
+A:rex系统中，clk_busy_wait()会阻塞所有的task执行（但不阻塞中断），所以会浪费CPU时间。使用时一般不能超过100毫秒，而且要非常谨慎的使用。
+Q:rex_sleep()
+A:rex系统中，rex_sleep()只会阻塞当前task，不会浪费CPU时间。
+
+// dog task
+Q:通知dog暂停对某个task的监控
+A:dog_monitor_pause()，原理：dog_task_state[]中有个字段 is_blocked 设为true，dog就不管它了。
+Q:恢复监控
+A:dog_monitor_resume()。
+Q:各task调这个接口来报告自己正常
+A:dog_report()。
+Q:一些task调这个接口来直接踢硬件狗
+A:dog_kick()。
+Q:自动踢狗
+A:硬件寄存器0x8003400E：auto_click（1表示使能auto_click）。
+Q:watchdog复位
+A:硬件寄存器0x8003400C：watchdog_reset（1表示dog计数器清零，且auto_click去使能）
+Q:watchdog状态
+A:硬件寄存器0x80034018：dogstatus（只读，0x6表示自动踢狗，0x4表示手动踢狗）
+Q:何时应该自动踢狗？
+A:boot阶段都应该自动踢狗；启动到app后，只有进入休眠、关闭tcxo时钟时自动踢狗。
+
+// tmc task
+Q:rex os的总入口
+A:rex_init()，它的主要职责是初始化tmc 和 sleep task。
+Q:task的执行流程
+A:每个task的执行流程都类似，主要包括初始化（包括对时钟、电源、GPIO等硬件资源，以及堆栈、全局变量、buffer、timer、队列等软件资源）；然后就是死循环等待信号来，然后处理信号。
+Q:tmc task的主要职责
+A:初始化其它task，先启动service task，然后启动app task。
+
+// sleep task
+Q:sleep task
+A:处理睡眠相关的需求。它的优先级时最低的。分两种：浅睡和深睡。
+Q:浅睡
+A:当所有task都不是ready状态时，系统将所有cpu时间都用于sleep task，此时间运行至tcxo 19.2M，但不关闭CPU。
+Q:深睡（deep sleep）
+A:当浅睡持续一段时间后，系统将程序放入msm内部IRAM中、关闭所有可关闭的电源、CPU时钟将至32.768Khz，并halt cpu，进入真正节电模式。手机95%以上的执行时间都在深睡模式下。
+
+// timer task
+Q:timer机制
+A:timer是个task，即timer_tcb。
+Q:timer到时间有两种行为
+A:（1）给指定的task发一个指定的信号；（2）启动一个函数，其执行上下文为timer_tcb。前者较常见。
+Q:timer定义方式
+A:rex_def_timer(&timer, &task_name, sig_type); 定义时timer对象必须使用全局变量，尤其是只能定义一次。
+Q:timer机制（1）
+A:rex定时器是双向链表，timer注册时按时间长短顺序插入链表。
+Q:timer机制（2）
+A:CPU每5ms会触发一个定时器中断，该中断即 TRAMP_TIME_TICK_ISR。
+
+// task 同步机制
+Q:如何使用信号？（1）
+A:信号时task 同步的一种方式。其使用方法如下：（1）定义信号，信号的值在task内部时保证唯一性，且只有一位是1，比如0x8、0x10 之类。
+Q:如何使用信号？（2）
+A:然后，其它task（或者定时器）发此信号给本task；本task收到后，在 task_wait()中接受此信号，并执行相关功能。
+Q:如何使用信号？（3）
+A:注意，收到信号后第一件事是释放信号，使用 rex_clr_sigs()。
+
+Q:如何定义回调函数？
+A:定义回调函数类型：typedef void (* rdm_service_open_ptr)(sio_type); 并定义变量：rdm_service_open_ptr single_dev_p;
+Q:在上层定义回调函数
+A:void diag_open_cb(sio_type root_id); 然后将函数指针复制下去：single_dev_p = &diag_open_cb；
+Q:实现底层调用上层
+A:在底层代码中 single_dev_p(sio_port);
+
+// 临界区
+Q:中断不能用临界区的原因
+A:如果中断要访问的临界区正在被进程使用，则中断被进程阻塞，会导致系统的不稳定。
+Q:临界区的概念
+A:首先临界区是个资源，该资源不允许并发访问，一个时间只允许一个任务使用。一个模块中访问临界资源的那段代码叫临界区。为了保护临界资源，要求不同任务互斥的访问临界区。
+Q:rex中的临界区相关API
+A:rex_enter_crit_sect(&crit_sect);  rex_leave_crit_sect(&crit_sect);  rex系统中，临界区可以嵌套，但不能超过8层。尽量不要嵌套。
+Q:临界区之死锁问题
+A:如果两个进程互相持有对方要的临界区，那么就出现死锁问题。解决办法是：（1）一个进程只允许进一个临界区；（2）要求所有进程用同一个顺序进入临界区。
+Q:临界区之饥饿问题
+A:发生场景如下：三个进程，优先级A>B>C，C进临界区，B占据CPU，A想进临界区。显然，A被阻塞，C必须等B执行完，所以A反而需要等待低优先级B。解决方法：优先级反转，临时将占据临界区的进程优先级提高。
+
+Q:主要的高通文档
+A:software interface.pdf, mobile station modem user guide.pdf。
+
+
+
+
+
+

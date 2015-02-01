@@ -1,0 +1,121 @@
+// LCD TP 显示技术 sensor
+// V0.1
+
+// LCD行业
+Q:智能机屏幕的材质分类
+A:目前主流的屏幕分为两大类：一种是LCD(Liquid Crystal Display 的简称)，即液晶显示器。另一种是OLED(Organic Light-Emitting Diode的简称)即有机发光二极管。
+Q:LCD
+A:TFT、IPS、SLCD都属于LCD的范畴。
+Q:TFT
+A:TFT(Thin Film Transistor)即薄膜场效应晶体管，它可以“主动地”对屏幕上的各个独立的像素进行控制，这样可以大大提高反应时间。一般TFT的反应时间比较快，约80毫秒，而且可视角度大，一般可达到130度左右。
+Q:IPS
+A:这种LCD已经存在有一段时间了，但在苹果平板电脑之前一直没有大规模使用。IPS能提供更广阔的视角，更好的色彩还原。IPS仍然属于LCD范畴，最大生产商是LG。
+Q:IPS、ASV、NOVA
+A:都是基于TFT屏幕的一种改进面板技术。
+Q:SLCD
+A:SLCD，全名Super clear LCD，是由三星研制，其拥有Super AMOLED的艳丽对比度，色彩更暖，更自然，适合人眼观看，屏幕清晰。SLCD是一种液晶屏幕，不是自发光的。可看成TFT的一个超级版。
+Q:OLED（1）
+A:三星引以为傲AMOLED系列屏幕属于OLED，被称誉为“梦幻显示器”。
+Q:OLED（2）
+A:OLED显示技术与传统的LCD显示方式不同，无需背光灯，采用非常薄的有机材料涂层和玻璃基板，当电流通过时，有机材料就会发光。而且OLED屏幕可以做得更轻更薄，可视角度更大，并能显著的节省耗电。
+Q:sharp+LG出的的屏
+A:LTPS，良品率据说只有20%，所以成本下不去。
+Q:in-cell技术
+A:即tp模组玻璃和前面板玻璃融为一体，也叫单玻璃（OGS）技术。目前（2012年）只有三家厂商有这个技术：LG Display、夏普以及Japan Display Inc。其产能基本被苹果垄断。
+Q:一般屏幕有几个部分组成？
+A:最外面是玻璃，后面是tp，接下来是lcd，一般是三层。
+Q:康宁Gorilla玻璃
+A:康宁Gorilla玻璃（大猩猩）比塑料硬30倍，比塑料韧性好20倍，防刮耐磨。高端智能机基本都用了。
+Q:摩氏矿物硬度表
+A:硬度可以分为10个等级：1滑石  2石膏  3方解石  4萤石  5磷灰石  6正长石  7石英  8黄玉  9刚玉  10金刚石。
+Q:硬度高的可以刮花硬度低的
+A:普通玻璃的硬度是6-7左右，而钢的硬度仅为5，所以即使是普通的玻璃，用刀也是刮不花的。真正刮花手机屏幕的是沙子，沙子里包含了石英，摩氏硬度为7.5左右。
+
+// 帧率
+Q:帧率
+A:每秒显示帧数，或Hz。人有视觉暂停的特性，对于连续远动的静态图片，当超过16帧/秒时，就感觉到运动是连贯的。这是视频、动画的原理。
+Q:游戏的一般帧率
+A:游戏中，帧率（FPS）<30，游戏性就下降。30以上，则可以接受。如果升至60帧则交互性和逼真感大大加强，超过75帧无感觉。
+Q:一般场合下的帧率
+A:电影 24Hz； 电视25Hz； 电视（NTSL)29.9Hz； CRT影响75Hz； 液晶显示60Hz。
+Q:图像处理能力
+A:图像处理能力=分辨率*刷新率
+
+// TP
+Q:电阻屏1
+A:利用压力感应来控制。原理很简单，两层导电膜之间隔一层电阻膜，后者布满了小孔（孔径小于1/1000英寸）。三层膜都是透明的。
+Q:电阻屏2
+A:如果手指按下，两层导电膜会导通，通电位置不同电阻不同，于是就可以算出坐标。
+Q:电阻屏3
+A:常用的电阻屏是四线电阻屏，每层导电膜各有两个线，一个竖直方向，一个水平方向，加5v恒定电压。
+Q:电容屏
+A:电容屏把人体作为一个电极使用。当人体没接触屏时，面板各处电压都相同，没有电流通过。当手指触摸时，人体的静电流入产生微弱的电流，电流会引起电压的变化，根据电压变化可计算触点的位置。
+Q:电容屏的优势
+A:方便，用手指即可；操作流畅；屏的透光性好。电容屏中，压力值无效。
+Q:TP代码（1）
+A:核心态代码：atml_imc.c（驱动代码）、input.c（input子系统，包括电阻屏、电容屏、键盘、鼠标、游戏杆等设备都算input设备）、/kernel/drivers/input/eventdev.c（事件处理）。
+Q:TP代码（2）
+A:用户态代码：hal层，
+Q:TP代码（3）
+A:初始化：register -> Probe -> I2C check -> 取X轴、Y轴，Max_x,Max_y -> read_PDT(寄存器种event的buffer地址) -> 固件更新，/sys -> proc，数据处理
+Q:TP代码（4）
+A:初始化2：创建工作队列线程 -> 创建工作队列 -> 配置中断，低电平触发 -> 申请中断；如果非中断，则启动timer -> 注册early syspend/resume函数。
+Q:TP代码（5）
+A:数据处理：input子系统中，在中断或timer触发下，读取event_table[]，数组下标即设备号，获取当前evnet；通过主设备号，获取input->fops（event处理函数）处理该event。处理方式就是上报键值和坐标。
+Q:TP代码（6）
+A:键值上报：hal层device_poll()读取 /dev/input/event_x，x即设备号，然后上报给framework层。数据结构即sensor_event_t，包括type、handle、value（union类似，可适配多种input设备）。
+
+// LCD
+Q:lcd背光等开关代码
+A:modem侧，pm_set_lcd_intensity()，在oemsbl中用到。
+Q:lcd连接方式：MCU
+A:也写成MPU，目前最常用。分为8080模式和6800模式。数据位传输有8位，9位，16位，18位，24位。连线分为：CS/，RS(寄存器选择），RD/，WR/，再就是数据线了。
+Q:MCU的优劣
+A:优点是：控制简单方便，无需时钟和同步信号。缺点是：要耗费GRAM，所以难以做到大屏（3.8以上）。
+Q:lcd连接方式：RGB
+A:大屏采用较多的模式，数据位传输也有6位，16位和18位，24位之分。连线一般有：VSYNC，HSYNC，DOTCLK，CS，RESET，有的也需要RS，剩下就是数据线。它的优缺点正好和MCU模式相反。
+Q:lcd的其它连接方式
+A:SPI、MDDI、DSI。由于软件控制比较复杂，用的比较少。
+
+Q:LCD常见问题
+A:包括白屏、黑屏、花屏、冻屏。
+Q:LCD初始化流程
+A:包括寄存器和sleep wakeup的配置，以及配置EBI2总线的LCD控制器，这个时序经常出问题。
+Q:LCD显示
+A:有如下步骤：1.设置矩形区域；2.设置显示方式；3.写入数据。建议每次刷新时都重新设置一次显示方式。
+Q:显示方式分两种
+A:MDP控制和ARM控制。MDP是利用DMA传输，优点是显示速度快。注意内存只能使用物理地址。
+Q:LCD花屏的常见原因
+A:最常见的原因是MDP和ARM同时控制显示。ARM控制显示一般是为了调节亮度等的时候。此时就需要保护机制。
+Q:另一个常见原因是：
+A:MDP刷屏对时序要求很严格。发现花屏时，可通过LCD_CFG0寄存器来调节时序。
+
+// DTV
+Q:DTV driver框架：硬件
+A:SDIO 3 host控制器 -》 DTV sms3130芯片
+Q:DTV driver框架：kernel
+A:QCom mmc driver -》 Siano sdio device driver
+Q:DTV driver框架：hal
+A:libsmscontrol.so。
+Q:DTV上电时序
+A:先拉低reset pin，然后enable LDO6，再enable LDO15，再拉高reset pin。
+Q:DTV下电时序
+A:先拉低reset pin并配置为input，然后disable LDO15，再disable LDO6。
+Q:上下电代码
+A:代码封装到config_dtv_power()，该函数export了，在Siano的smschar.c中的power on/off中调用。
+
+// sensor
+Q:加速度传感器
+A:代码：/kernel/drivers/input/accelerometer/gs_mma8452.c。
+Q:识别飞兆芯片手机的方法
+A:adb shell cat /sys/class/regulator/regulator.26/name，结果是 fan53555_sw 表示是飞兆芯片。
+
+Q:G-sensor
+A:Gravity-sensor，重力传感器。它能够感知到加速力的变化，加速力就是当物体在加速过程中作用在物体上的力，比如晃动、跌落、上升、下降等各种移动变化都能被G-sensor转化为电信号。 
+
+
+
+
+
+
+

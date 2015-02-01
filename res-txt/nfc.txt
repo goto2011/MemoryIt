@@ -1,0 +1,27 @@
+// nfc
+// V0.1
+
+Q:功能1
+A:读卡：做pos机用，卡刷手机。简称别人刷它。
+Q:功能2
+A:卡模拟：做nfc卡用，刷别的pos机。简称它刷别人。
+Q:功能3
+A:P2P：两个手机互传文件或电话本。简称互刷。
+Q:NFC芯片的管脚
+A:VEnable（使能）、INT（中断）、DATA（数据）接到CPU上；clk_req（时钟请求）和clk（时钟）接到PMU上。
+Q:NFC电源
+A:VBAT（电源）接到电池引脚上，所以没有电池nfc就无法使用。
+Q:clk模式
+A:分动态模式和静态模式，根据clk_req来调整。这部分稳定性比较差。
+Q:代码层次1
+A:java应用层：nfc Service。
+Q:代码层次2
+A:JNI和fw层：核心是libnfc.so，为nxp协议的实现。代码在 extern/libnfc_hxp/ 下。
+Q:代码层次3
+A:nfc模块没有hal层。fw之下直接就是drv了，代码在 /kernel/../nxp544.c。
+Q:nfc参数
+A:参数表放在 /data/misc/nfc/eedata.cfg。nfc模块启动后将其写入寄存器。
+Q:参数格式
+A:一行一字段，字段前三行为地址，第4项为值。
+
+

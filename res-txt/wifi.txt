@@ -1,0 +1,143 @@
+// wifi
+// V0.2
+
+Q:wifi和wlan是不是同一个概念？
+A:应该这么讲，在国外，这个是同一个概念，因为wifi是wlan的唯一实例。但在中国，还有个WAPI标准。不过WAPI其实就是wifi。WAPI每台收费6人民币，wifi标准目前免费。
+Q:802.11协议族
+A:只需要关注三个：（1）802.11b，1999年，11Mbit/s；    （2）802.11g，2007年，54Mbit/s；     （3）802.11n，2009年，导入多重输入输出（MIMO）技术，带宽最高达600Mb/s。我们最高支持11n的65Mb/s。  PS：11x即winmax，目前已死。wifi和winmax都是inter在主力支持。
+Q:802.11协议栈的分层
+A:分为6层：PHY：硬件  MAC：介质访问控制（这两层为硬件层）   LLC（数据逻辑链路）   IP    TCP    APP（应用）
+Q:把数据链路层分为两层
+A:偏硬件的介质访问控制层和偏软件的数据逻辑链路层。新出的通讯协议一般都是如此，因为介质访问控制一般作为fireware放在硬件了。
+Q:wifi使用的频段
+A:2.4G（也有5G频段的，较少），带宽是20M，一般分为14个信道（channel），编号为1-14。该频段为免费频段。
+Q:SSID
+A:service set ID，服务集识别码
+Q:多SSID的参数共用
+A:需要单独配置的参数：加密方式、SSID名、接入限制、隐藏SSID；可共用的参数：信道、功率、速率等。
+Q:BSS
+A:Basic Service Set，基础服务集，一个AP决定一个BSS网络。
+Q:ESS
+A:互联的多个BSS组成ESS。STA在ESS中的移动（即wifi漫游）对上层不可见，SSID不变，IP地址不变。（适合商业环境）
+Q:wifi网络的组成
+A:最常见的就是AP和STA组成的网络，叫BSS。AP即热点，也叫接入点，STA即客户端设备。
+Q:wifi的三个功能
+A:STA：wifi接入；    AP：软件(虚拟)热点；   wifi direct：客户端直连。后面主要讲STA功能。
+Q:STA功能有三个主流程
+A:（1）打开/关闭设备；（2）扫描/鉴权；（3）数据传输。
+Q:wifi使用的芯片1
+A:目前用过三种，ath，高通收购的，便宜，不稳定。8220、8100等几款09年的机型用。
+Q:wifi使用的芯片2
+A:博通4329（10年）/4330（11-12年），优点是稳定、复合程度高，有三合一、四合一、五合一，目前主打，就是比较贵。
+Q:wifi使用的芯片3
+A:高通wcn，高通主打芯片，不稳定，但高通免费送，且强推。8930平台在用。
+Q:硬件管脚和晶振
+A:REG_ON:上电；WLAN_WAKEUP_MSM:唤醒管脚；CMD；CLK；DATA1-4。我们手机上clk配置的是25M。BC的wifi芯片，需要37.4M的晶振。
+Q:手机上的总线类型
+A:SDIO，用于wifi、emmc、sd卡；串口：BT；MDDI/并口：camera；I2C：camera 控制、sensor、tp等；USB：usb设备。
+Q:代码结构1
+A:1.APP相关模块；  2.framework：主要是netd（daemon）、dnasmasq、wpa_suppliant（wifi开源协议栈，目前为主流）   3.HAL：network interface；   4.driver：wifi driver、SDIO driver。
+Q:应用层相关模块
+A:（1）settings，主入口；（2）system UI，通知栏和状态条；（3）Toolbox，第三方应用；（4）widget，桌面小部件，控制wifi使用。3和4可选。
+Q:app层的状态刷新流程
+A:3和4的主要功能是接受底层上报的状态，然后去更新界面显示。AppWidgetPorvider --》BroadCastRecerver，后者常驻后台，转发各种消息。
+Q:app层的设备初始化流程
+A:WifiSettings类 --》WifiEnabler类，打开成功后，将 wifi_DB 写入 Settings_DB。
+Q:framework层的设备初始化流程
+A:WifiManager（接口层，状态刷新也是找它）--》WifiService（核心类） --》WifiStateTracker --》 WifiMonitor
+Q:drv层的设备初始化流程1
+A:wifi.c（hal） --》通过socket通讯 --》 kernel加载wifi.ko（目前唯一一个动态加载的模块）
+Q:drv层的设备初始化流程2
+A:驱动层还是 module_init() --》DHD_open() --》从 nvram中读出信道、国家码等信息 --》 php_init()，启动协议栈。至此，drv层的设备初始化完成。
+Q:nvram是什么？
+A: /system/wlan/broadcom/nvram.txt 目录下，为txt文件，保存wifi的校准数据。为博通芯片用的。高通芯片也有类似的方案，但是叫calcdata。
+Q:自校准方案
+A:博通芯片内置直校准，不用外界干预。高通芯片不支持，需要外部控制校准，所以产线上需要增设一个WT工位。目前高通正在做自校准方案，不成熟。每出一个产品都需要投递手机给高通重新调试，周期在一周以上。
+Q:校准数据
+A:校准数据来自射频组，一个产品一套；准确说，应该叫基准校准数据。因为产品wt工位上还要对wifi做一次校准，叫差值校准数据，后者每部手机都不同。
+Q:芯片自动扫描
+A:wifi打开后，芯片会自动开始扫描。扫描方式分为主动和被动。主动就是发prob req命令给周边设备；被动就是接受ap发的命令，我们只支持被动。周期是7秒（// todo），如果有连接上的（即通过鉴权），就不再扫描。
+Q:应用发起的扫描
+A:进入settings wifi设置菜单后，MScanner类会周期性的发起扫描，其中G版本是6秒一次，I版本是10秒一次。无论是否连接上，都会持续扫描。退出界面就不扫了。
+Q:找到AP后上报的流程
+A:需要上报的数据包括ssid、bssid、proto等。每个扫描周期上报一次，即6秒或10秒。不是找到一个就上报。AP数量没有明确的上限。
+Q:鉴权方式
+A:open（不需要鉴权）、wep（密码）、WPA/WPA2（）、EAP-SIM/EAPAKA鉴权（通过运营商鉴权，自动鉴权）、WPS（一系列的简易鉴权方式）
+Q:WPS有几种？
+A:WPS，即Wi-Fi Protected Setup，最常见的就是按下AP的wps键，自动鉴权，避免用户输入密码，即Push Button Config（PBC），还有Pin Input Config（PIN）、USB Flash Drive Config（UFD）以及NFC Contactless Token Config（NFC）。
+Q:WPS的工作原理
+A:对于STA来讲，还是需要密码，只是这个密码是AP传过来的，只是省了用户输入的步骤。
+Q:wifi密码缓存在哪里？
+A:  /data/misc/wifi/wpa_supplicant_conf 中，是明文保存。会记录所有连接过的ap信息。
+Q:连接后，DHCP（分配IP）的过程
+A:STA发出discover请求；AP回应effor包，其中包括IP、子网掩码、DNS、IP id这些信息；然后AP发出request指令，STA把IP配置完成后，返回ack告知AP：设备侧准备就绪。
+Q:wifi底层问题单高发区
+A:休眠唤醒相关、扫描相关、鉴权相关
+Q:wifi log
+A:(1)wpa_supplicant(291)... (2)wifi monitor.
+
+Q:中国电信c+w功能
+A:中国电信部署了3个热点，要求支持c+w功能的手机在搜ap时，按照latest ssid > customized ssid（指电信热点）> normal ssid的优先级来连接。
+Q:beacon包
+A:手机和热点通过beacon包维持连接，热点每隔100ms发给一次beacon广播。
+Q:BT和wifi共用天线的问题
+A:共用天线时，一旦芯片发现wifi beacon包有丢失，会调高优先级保证wifi数据，此时BT连接很容易失败。
+
+Q:wifi地址
+A:wifi地址即无线网卡的mac地址。如果没有mac，wifi功能不可用，包括热点。
+Q:BCM4330的时钟
+A:它使用32.4M的时钟。
+
+Q:wifi
+A:WiFi的全称是Wireless Fidelity，无线保真技术。与蓝牙技术一样，同属于在办公室和家庭中使用的短距离无线技术。
+Q:wifi的频段
+A:2.4GHz附近的频段，该频段目前尚属没用许可的无线频段。wifi覆盖范围可达90米左右，且可穿墙。
+Q:802.11n
+A:802.11n平台的速度为350M。是首个能够承载高清视频、音频和数据流的无线多媒体分发技术。
+Q:Station (STA)--1级概念
+A:工作站，任何设备只要拥有 IEEE 802.11 的 MAC 层和 PHY 层的接口，就可称为一个工作站。
+Q:Station Services (SS)--1级概念
+A:工作站服务，软件概念。提供工作站送收资料的服务，此外在安全方面，还提供了身份确认服务(Authentication)和隐密性服务(Privacy)
+Q:Access Point (AP)--1级概念
+A:热点/访问点，连结 BSS 和 DS 的设备，不但具有工作站的功能，还提供工作站访问分布式系统的能力，通常在一个 BSA 内会有一个AP。
+Q:Basic Service Area (BSA)--2级概念
+A:即一个wifi子网，最小的子网即一个热点和一个STA。
+Q:Basic Service Set (BSS)--2级概念
+A:BSA中所有STA的集合。
+Q:Distribute System (DS)--3级概念
+A:分布式系统，通常是由有线网络所构成，可将数个 BSA 连结起来。
+Q:Extended Service Area (ESA)--3级概念
+A:数个 BSAs 经由 DS 连结在一起，所形成的区域，就叫作一个扩充服务区。
+Q:Extended Service Set (ESS)--3级概念
+A:数个经由分布式系统所连接的 BSS 中的每一基本工作站集，形成一个扩充服务集。
+Q:Distribution System Services (DSS)--3级概念
+A:分布式系统所提供的服务，使得资料能在不同的 BSSs 间传送。
+Q:认证方法1--WPA/WPA2
+A:即输密码。最常见。
+Q:认证方法2--WPS
+A:一系列更简单的认证部分，设计的原则是基于用户触手可及的事物来完成认证，包括pic（印刷在热点表面的pin码）、pbc（按下热点上的按钮）、udc（u盘）、nfc、ctc（无线令牌）。
+
+Q:总线类型--SDIO
+A:wifi使用sdio作为总线类型。A平台和Q平台都是用sdcc2。地址空间为：0x A050 0000~ 0x A060 0000。
+Q:SDIO驱动为WIFI驱动提供的接口（1）
+A:sdio_memcpy_fromio；sdio_memcpy_toio：高通SD模块内存读写
+Q:SDIO驱动为WIFI驱动提供的接口（2）
+A:sdio_readsb ；sdio_writesb：高通SD模块的FIFO读写
+Q:SD模块驱动安装成功的标志
+A:/sys/devices/platform/msm_sdcc.2/polling会出现在系统的文件系统中。
+Q:wifi的打开（-1）
+A:/frameworks/base/core/jni/android_net_wifi_Wifi.cpp， android_net_wifi_loadDriver()。
+Q:wifi的打开（-2）
+A:hardware\libhardware_legacy\wifi\wifi.c，Wifi_load_driver()，调用insmod()加载 /system/lib/modules/librasdioif.ko 和 /wifi/dhd.ko，安装librasdioif.ko。
+Q:wifi的打开（-3）
+A:调用property_get() 获取 wifi.chip.type，G610用的是2.1，表示高通ar6000。bcm4329为1.1，bcm4330为1.2。log：chip_type = 2.1
+Q:wifi的打开（-4）
+A:调用ath_is_wifi_driver_loaded()，加载高通ar6000芯片驱动；调用bcm_wifi_load_driver()，加载博通芯片驱动；
+Q:wifi的打开（-5）
+A:调用ath_write_softmac()将wifi地址写入驱动。从getmac()可看出，wifi地址是从modem传入的，如果没有，则使用随机数（gen_random_macaddr()）。log：origin softmac: EC:23:3D:E5:F7:73。
+Q:wifi打开状态
+A:wifi状态可通过 wlan.driver.status 来确认。包括ok、locked等。
+Q:确认wifi硬件状态
+A:fopen /proc/modules，这是个文本文件，如果其中有ar6000，则表示wifi已启动。
+
+

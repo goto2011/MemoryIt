@@ -1,0 +1,412 @@
+// IPhone
+// V0.1     2012-10-1   inti
+// V0.7     2013-3-31   内容得到极大的扩充，基本完善。
+
+// 基础
+Q:iphone应用的限制（1）
+A:iPhone的程序只能是单进程，而且每个时刻只能有一个活动窗口，并占据整个窗口。
+Q:iphone应用的限制（2）
+A:在iPhone上不能访问较小的网络端口号。
+Q:iphone应用的限制（3）
+A:iPhone程序在退出时只有5秒钟的时间，超时的话会被系统强制退出，用户数据可能丢失。
+Q:iphone应用的限制（4）
+A:目前上市的iPhone手机内存为128M。IOS没有内存交换机制。Cocoa Touch提供机制去通知程序内存不足的情况。
+Q:iphone应用的限制（5）
+A:Cocoa Touch不支持垃圾收集
+
+Q:OC和C的关系
+A:OC完全兼容C，所以C代码可自由的放进OC中，双方调用是无缝的。
+Q:重构(Refactor)
+A:xcode中，Edit -> Refactor，可进行重构。但功能比较弱。
+Q:函数列表的分级和加重
+A:在代码中加入如下预编译代码，以便组织好代码。#pragma mark -       #pragma mark Picker Data Source Methods
+
+// 数据结构
+Q:字符串
+A:NSString 是字符串类。
+Q:用字符串常量赋值
+A:字符串常量用符号@表示。内部存储用unicode。如：NSString *my = @"Hello world";
+Q:字符串的格式化输出
+A:NSString * myStr = [[NSStringalloc]initWithFormat:@"%@ is: %d", mytitle, myindex];  // %@表示字符串，其它和sprintf完全一样。
+Q:将包含数字的NSString字符串转换为整数
+A:int value = [myStr intValue];
+Q:获取子串：substringFromIndex
+A:传入一个整数。从指定位置到字符串末尾。0表示第一个字符位置；整数超过首尾会报错。NSString *subStr = [myStr substringFromIndex:0];
+Q:获取子串：substringToIndex
+A:传入一个整数。从字符串开始到指定位置。0表示第一个字符位置；整数超过首尾会报错。NSString *subStr = [myStr substringToIndex:1];
+Q:获取子串：substringWithRange（1）
+A:这个要稍微复杂，先要创建一个NSRange类表示范围，NSRange range = NSMakeRange(0, 5); 0表示第一个字符位置；
+Q:获取子串：substringWithRange（2）
+A:NSString *subStr = [myStr substringWithRange:range];整数超过首尾则会报错。
+Q:切分字符串（1）
+A:NSArray *array = [myStr componentsSeparatedByString:@"，"];  // 逗号为分隔符，返回数组。注意，array不是 init出来的，所以不能release。
+Q:切分字符串（2）
+A:NSString *myString3 = [array objectAtIndex:2];  // 从数组中获取字符串。
+Q:如何一行行读取文本文件？（1）
+A:+ (id)stringWithContentsOfFile:(NSString *)path encoding:(NSStringEncoding)enc error:(NSError **)error; // 先读文件内容
+Q:如何一行行读取文本文件？（2）
+A:- (NSArray *)componentsSeparatedByString:(NSString *)separator;  // 再把NSString按照’\n’分割为NSArray数组。
+Q:log打印整数
+A:NSLog(@"There are %d elements.", count);  // 注意看@前缀，以及 %d，后者和printf()完全一样。
+Q:打印对象自描述
+A:按照Cocoa的约定，每个对象都应该有一个叫description的函数，用于描述一个对象。- (NSString *)description。
+
+Q:可变字符串
+A:NSString类定义的字符串是不能被修改的。如果要修改一个字符串，就应该使用类 NSMutableString。
+Q:可变字符串的定义
+A:NSMutableString *myStr = [[NSMutableString alloc] init];
+Q:用NSString初始化一个NSMutableString
+A:myStr = [@"Julia!" mutableCopy];  // 使用mutableCopy类方法。
+Q:可变字符串的格式化输出
+A:[myStr appendFormat:@"[%2d] %@\n", indent, [[aView class] description]]
+Q:可变字符串拼接
+A:[myStr appendString:@"--"];
+
+Q:整数
+A:OC中使用整数，和C一样用int。但更推荐使用NSInteger，因为这样就不用考虑设备是32位的还是64位的。
+Q:有符号整数
+A:NSUInteger是无符号的，即没有负数，NSInteger是有符号的。
+Q:NSNumber
+A:NSNumber是一个类，负责对C基础数据类型进行封装。比如NSInteger就是基础类型，想要序列化一个基础类型，需要使用NSNumber。
+Q:往数组中保存一个整数
+A:NSArray *array = [[NSArray alloc]init];  [array addObject:[NSNumber numberWithInt:3]];
+Q:NSNumber的用法：字符
+A:+ (NSNumber *) numberWithChar: (char) value;  - (char) charValue;
+Q:NSNumber的用法：整数
+A:+ (NSNumber *) numberWithInt: (int) value;  - (int) intValue;
+Q:NSNumber的用法：浮点数
+A:+ (NSNumber *) numberWithBool: (BOOL) value;   - (float) floatValue;
+Q:NSNumber的用法：布尔数
+A:+ (NSNumber *) numberWithBool: (BOOL) value;   - (BOOL) boolValue;
+Q:用NSNumber将数字转为字符串
+A:[[NSNumber numberWithInt: 123] stringValue];
+
+Q:NSMutableArray：可变数组
+A:初始化：NSMutableArray *myArray = [NSMutableArray array];
+Q:数组增加元素
+A:[myArray addObject:@"First string"];
+Q:数组返回元素个数
+A:int count = [myArray count];
+Q:数组替换数组元素
+A:[myArray replaceObjectAtIndex:1 withObject:@"Hello"];
+
+Q:时间对象NSDate
+A:创建NSDate：+ (id)date;  // 返回当前时间
+Q:创建NSDate（2）
+A:+ (id)dateWithTimeIntervalSinceNow:(NSTimeInterval)secs;  // 返回以当前时间为基准，然后过了secs秒的时间
+Q:创建NSDate（3）
+A:+ (id)dateWithTimeIntervalSinceReferenceDate:(NSTimeInterval)secs; // 返回以2001/01/01 GMT为基准，然后过了secs秒的时间
+Q:时间比较
+A:- (NSComparisonResult)compare:(NSDate *)other;  // 相同时返回NSOrderedSame;晚于anotherDate时返回NSOrderedDescending;早于anotherDate时返回NSOrderedAscending.
+Q:获取时间间隔（1）
+A:- (NSTimeInterval)timeIntervalSinceDate:(NSDate *)refDate; // 返回与refDate的时间间隔.
+Q:获取时间间隔（2）
+A:- (NSTimeInterval)timeIntervalSinceNow;  // 以当前时间(Now)为基准时间，返回时间间隔
+Q:获取基准时间间隔（3）
+A:+ (NSTimeInterval)timeIntervalSinceReferenceDate;  // 返回当前时间(Now)与2001/01/01 GMT的时间间隔
+Q:将时间表示成字符串
+A:- (NSString *)description; // 以YYYY-MM-DD HH:MM:SS ±HHMM的格式表示时间。其中 "±HHMM" 表示时差。比如，北京在东八区，则 "±HHMM" 显示为 "+0800"
+
+// 类和对象
+Q:类申明
+A:头文件（.h）中，@interface classname。声明接口，方便其它模块调用。
+Q:类实现
+A:m文件中，@implementation classname 实现类。
+Q:类继承
+A:在OC中，一个类只能继承一个父类，并且只能是public的继承（和java类似）。所有类都继承自 NSObject。
+Q:继承关系定义
+A:类定义时，冒号表示继承关系。@interface Foo : Bar{}。
+Q:虚方法
+A:在OC中，一切方法都是虚方法，只要子类有同名方法，就会被覆盖。
+Q:子类如何调用父类的同名方法
+A:子类可以通过 super关键字来调用父类的函数。（比C++方便太多了，也便于理解）。
+Q:方法分两类
+A:函数名前面用减号就是普通方法，用加号就是静态函方法，即类方法。不用new对象就可以调用。所以静态函数不能访问私有的类变量。
+Q:属性也分两种
+A:@private即私有属性，一个实例一个，new一个类才可以使用；@public，公用属性，一个类的多个实例共用一个，不用实例化就可以用。
+Q:类定义的基本方法（1）
+A:@interface ClassName : BaseClassName{...}... @end
+Q:类定义的基本方法（2）
+A:@private NSArray *fieldLabels;   // 申明私有的属性。如果需要被其它类访问，可以用 @public。注意，只有属性放在{}中，方法不用。
+Q:类定义的基本方法（3）
+A:@property(retain, nonatomic)NSArray *fieldLabels;  // 定义属性的存储属性（后面会详解）。
+Q:类定义的基本方法（4）
+A:+ (UIFont *)get_ribbon_list_font;  // 定义类方法。没有在h文件中出现的函数，为私有方法，其它类不要去访问。
+Q:类定义的基本方法（5）
+A:@property (nonatomic, retain)IBOutlet UITableView *tableView;  // 定义特殊的类变量：IBOutlet，和某个界面元素绑定。
+Q:类定义的基本方法（6）
+A:-(IBAction)goBack:(id)sender;    // 定义特殊的类方法：IBAction
+Q:类定义的基本方法（7）
+A:#import "ClassName.h"            // 以下就属于.m文件的内容。首先是包含头文件，用#import。
+Q:类定义的基本方法（8）
+A:@implementation ClassName ... @end
+Q:类定义的基本方法（9）
+A:@synthesize statusText;  // 这个是放在.m中的。通知编译器对类变量自动加 get/set 接口
+
+Q:单参数函数的申明
+A:OC的函数申明是有一点奇怪的。类似于填空。+ (UIImage *)get_ribbon_icon:(float)percent_value{}
+Q:多参数函数的申明（1）
+A:- (db_error)insert_to_db:(NSString *)_ribbon_name file_name:(NSString *)_file_name{}
+Q:多参数函数的申明（2）
+A:关键是理解file_name是什么。它是函数名的第二部分。如果有3个参数，则函数名有3个部分。我曾经总结了一个口诀，现在忘了。
+Q:协议protocol（也有叫接口的）
+A:协议只有方法没有属性，只有声明不用实现。利用协议实现多重继承，极大的简化了语言的复杂度。
+Q:协议的定义
+A:系统预制了很多协议，也可以自定义。@protocol interfacename  声明协议。
+Q:协议的使用
+A:协议在类申明中定义，@interface RibbonList : UIViewController<UITableViewDataSource>  // 用<>定义协议。
+Q:组别Category
+A:组别本质上赋予了OC动态语言的能力。它不用修改类的代码，就可以给类添加新的方法。可以动态的扩展一个类。
+Q:Category的定义
+A:@interface ClassName(Category); @implementation ClassName(Category)。Category总是需要指明所关联的类名。
+Q:Category的用法
+A:其它代码包含Category的头文件，就可以使用该Category中的方法。
+Q:对象的实例化
+A:ClassName* pMy = [[ClassName alloc] init];  // alloc、init为静态类方法，能且只能返回对象指针。
+Q:对象的释放（1）
+A:释放分两种。第一种是自动释放，对象声明后 [pMy autorelease]后，就可以只管使用不管释放。有性能问题，IOS最好不要用。
+Q:对象的释放（2）
+A:对象使用完后，调用[pMy release]释放。
+Q:id类
+A:id类的目的类似于模板，也即泛型（这个词真装B，其实就那么点意思）。所有的类都可以对应一个id类型。 id cur = sq; 然后cur就指向这个对象。定义不确定类型的入参时可以用。
+Q:调用对象方法
+A:[]，这个习惯了也就没事了。调用一个class，相当于向class发送消息。OC不允许方法重载。
+Q:autorelease
+A:除了alloc、new或copy之外的方法创建的对象都被声明了autorelease。尤其是NSString类。
+
+// 内存管理
+Q:ios内存管理原则（1）
+A:谁创建，谁释放。通过alloc、new或copy来创建一个对象，必须调用release或autorelease来释放。换句话说，不是你创建的，就不用你去释放。
+Q:ios内存管理原则（2）
+A:在一个函数中alloc生成了一个对象，且这个对象只在这个函数中被使用，那么必须在这个函数中调用release或autorelease。
+Q:ios内存管理原则（3）
+A:如果在一个class的某个方法中alloc一个成员对象，且没有调用autorelease，那么就需要在这个类的dealloc方法中调用release。
+Q:ios内存管理原则（4）
+A:除了alloc、new或copy之外的方法创建的对象都会被系统声明了autorelease。不用负责释放。
+Q:ios内存管理原则（5）
+A:由于4，很多对象在传递到外层使用时，需要 retain，否则会被系统自动释放掉。
+Q:ios内存管理原则（6）
+A:谁retain，谁release。只要调用了retain，无论这个对象是如何生成的，都要调用release。有时候代码中明明没有retain，可是系统会在默认实现中加入retain。
+Q:创建一个autorelease的对象
+A:ClassA *pMy = [[[ClassA alloc] init] autorelease];
+Q:Release一个对象后，立即把指针清空
+A:obj1 = nil;  BTW:release一个空指针是合法的，但不会发生任何事情。
+Q:指针赋值（1）
+A:OC指针赋值时，retain count不会自动增加，需要手动retain。
+Q:指针赋值（2）
+A:所以如下代码才是可靠的。ClassA *obj2 = obj1;   [obj2 retain];  ...  [obj2 release];   obj2 = nil;
+Q:在一个函数中创建并返回对象
+A:需要把这个对象设置为autorelease。ClassA *obj = [[[ClassA alloc]init]autorelease]; return obj;
+Q:类属性的生命周期（1）
+A:类中声明一个对象属性，ClassB *objB;
+Q:类属性的生命周期（2）
+A:设置属性的存储属性。@property (retain) ClassB* objB;
+Q:类属性的生命周期（3）
+A:定义属性的get/set接口。 @synthesize objB;
+Q:类属性的生命周期（4）
+A:除了dealloc方法以外，始终用.操作符的方式来调用属性，如self.objB 或者objA.objB。（？）
+Q:类属性的生命周期（5）
+A:在dealloc方法中release这个类属性。 [objB release];
+Q:避免NSArray造死机的方法
+A:NSArray造成死机的原因是，NSArray是自动autorelease的，所以经常出现的一种情况是这次好用，下次不好用了。autorelease不承诺马上释放。
+Q:合适的使用NSArray的方法
+A:NSArray *First = [[NSArray alloc] initWithObjects:...; self.FirstArray=First; [First release];
+Q:输出对象的使用指数
+A:每个对象都支持retainCount，返回一个整数。不要通过retaincount来判断object的生存期，而应该着眼于创建方式。
+Q:字符串不用release
+A:字符串不用release。
+Q:atomic
+A:设置成员变量的@property属性时，默认为atomic，提供多线程安全。推荐使用。
+Q:nonatomic
+A:禁用多线程变量保护，可以提高性能。
+Q:assign
+A:对基础数据类型 （NSInteger，CGFloat）和C数据类型（int, float, double, char）等等。此标记说明设置器直接进行赋值，这也是默认值。
+Q:retain
+A:对NSObject及其子类对参数，默认为retain属性。意思是进行release旧值，再retain新值。
+Q:copy
+A:此属性只对那些实行了NSCopying协议的对象类型有效，在赋值时使用传入值的一份拷贝。拷贝工作由类的copy方法执行。
+Q:copy与retain
+A:Copy其实是建立了一个相同的对象，而retain不是。
+
+// 界面元素
+Q:Interface Builder中图标的含义
+A:File's Owner表示拥有此nib文件副本的对象；First Responder 表示当前用户正在与之交互的对象，它将随着用户与界面的交互而变化。除这两者之外，此窗口中的任何其他图标都表示将在 nib文件 加载时创建的文件对象实例。
+Q:Interface Builder不会生成代码
+A:它会创建Objective-c对象，然后将这些对象序列化到nib文件中。
+Q:iPhone的程序图标
+A:.png格式，大小是57*57的方形，圆角处理是系统自动完成的。加入该图标的方法是在Info.plist文件中的Icon file行输入图片名称。
+Q:MVC模型
+A:即model-view-controller。MVC应该是最早的设计模式（74年提出）。
+Q:model + view
+A:其中model 即用户逻辑，包括数据及其算法。view即视图，在cocoa编程中，即xib文件。
+Q:controller
+A:控制器即处理model和view的衔接部分，包括系统事件、outlet、action的处理。可以把UIAppDelegate理解为UIWindow的控制器。
+Q:view的再细化（1）
+A:nib = view；view 即用户可见的界面。习惯上,view 分view和subview;其中view占据整个手机屏幕,而subview为view的一部分，即控件。nib是个xml文件。
+Q:view的再细化（2）
+A:WinMain.nib 为第一个view。WinMain.nib 的 file owner即为程序的主控制器。
+Q:outlet的本质
+A:outlet 即界面中控件的名字，以便代码访问; 控制方向为 "代码 —> 界面".
+Q:action
+A:action即控件事件； 控制方向为 "界面 —> 代码”.
+Q:如何定义outlet？
+A:@property (nonatomic, retain) IBOutlet UIWindow *window;
+Q:如何定义action？
+A:-(IBAction)goBack:(id)sender;
+Q:xib的file owner即对应的controller
+A:因为controller负责加载xib文件。
+
+Q:如何设计标签栏视图?（1）
+A:在代码中添加根视图控制器的outlet 和 load 代码;
+Q:如何设计标签栏视图?（2）
+A:在MainWindow.xib 中加入 Tab Bar Controller, 注意和普通控件直接拖到window窗口不同.Tab Bar Controller 要拖放到MainWindow.xib 窗口;
+Q:如何设计标签栏视图?（3）
+A:设置Tab Bar Controller 中标签个数;
+Q:如何设计标签栏视图?（4）
+A:点击各个标签, 分别指定其” NIB name”。再点击各个标签, 分别指定其 title 和 显示图片。
+
+// 启动流程和生命周期
+Q:启动流程1：实例化UIApplication
+A:每一个iphone程序都包含一个UIApplication对象,它管理整个程序的生命周期，它在main()函数中由UIApplicationMain()启动。但其实它把所有的工作都委托给UIAppDelegate。
+Q:启动流程2：设置UIAppDelegate
+A:UIAppDelegate对象要实现UIApplicationDelegate协议，从加载第一个显示界面开始，并且监听系统事件、程序事件调度整个程序的执行。具体如下：
+Q:系统事件：applicationWillResignActive
+A:当应用程序将要入非活动状态执行，在此期间，应用程序不接收消息或事件，比如来电话了。
+Q:系统事件：applicationDidBecomeActive
+A:当应用程序入活动状态执行，这个刚好跟上面那个方法相反。
+Q:系统事件：applicationDidEnterBackground
+A:当程序被推送到后台的时候调用。所以要设置后台继续运行，则在这个函数里面设置即可。
+Q:系统事件：applicationWillEnterForeground
+A:当程序从后台将要重新回到前台时候调用，这个刚好跟上面的那个方法相反。
+Q:系统事件：applicationWillTerminate
+A:当程序将要退出是被调用，通常是用来保存数据和一些退出前的清理工作。这个需要要设置UIApplicationExitsOnSuspend的键值。
+Q:系统事件：applicationDidReceiveMemoryWarning
+A:iPhone设备只有有限的内存，如果为应用程序分配了太多内存OS会终止应用程序的运行，在终止前会执行这个方法，通常可以在这里进行内存清理工作以防止程序被终止。
+Q:系统事件：applicationSignificantTimeChange
+A:当系统时间发生改变时执行。
+Q:系统事件：applicationDidFinishLaunching
+A:当程序完成载入后执行。
+Q:程序事件：willChangeStatusBarFrame
+A:当StatusBar框将要变化时执行。
+Q:程序事件：willChangeStatusBarOrientation
+A:当StatusBar框方向将要变化时执行。
+Q:程序事件：handleOpenURL
+A:当通过url执行。
+Q:程序事件：didChangeStatusBarOrientation
+A:当StatusBar框方向变化完成后执行。
+Q:程序事件：didChangeSetStatusBarFrame
+A:当StatusBar框变化完成后执行。
+
+Q:启动流程3：实例化UIWindow
+A:接下来需要显示界面了。首先在applicationDidFinishLaunching()中实例化UIWindow对象，即窗口。
+Q:启动流程4：添加视图
+A:“窗口”里要放“视图”，即往这个UIWindow对象里添加UIView对象。具体是通过实例化ViewController，然后调用UIWindow.addSubview ViewController.view完成。
+Q:addSubView:**.view
+A:子视图是以栈的方式存放的，每次添加子视图都是在最后面添加。[self.view addSubView:**.view]   其实就等于[self.view insertSubView:**.view atIndex:[self.view.subViews count]]; 
+Q:启动流程5：显示视图
+A:调用[window makeKeyAndVisible]显示视图。
+Q:启动流程6：ViewController负责load xib文件
+A:每个ViewController都对应一个xib文件，前者调用 loadView 来load后者。
+
+// 多视图
+Q:多视图的启动流程
+A:对于多视图应用，需要在MainWindow.xib中加入根控制器。根控制器+MainWindow.xib 叫做“启动视图”。启动视图是 UIAppdelegate 负责load的。
+Q:根控制器的功能
+A:后者是第一个启动的控制器，它负责 load 其它子视图，然后根据输入刷新视图。
+Q:根控制器的类别
+A:根控制器一般是UINavigationController 或 UITabBarController，也可以是自定义UIViewController子类。
+Q:内容视图
+A:内容视图即用户可见的部分，它一般包括如下2-3部分：视图控制器、nib文件，以及UIView 子类（可选）。UIView子类用于自定义view。
+Q:常见的多视图组织方式（1）
+A:navigation-based application：基于导航的应用。导航条一般位于界面顶部，用于换页，各页间一般有逻辑层次关系。
+Q:常见的多视图组织方式（2）
+A:tab bar application：基于标签栏的应用，一般用于在多个选择中选中一个，且只能选择一个。各页间一般是并列关系。
+Q:常见的多视图组织方式（3）
+A:utility application：工具型应用。最简单的多视图应用程序，它包括两个视图，一个为主界面，另一个可用于配置或提供更多信息。
+Q:常见的多视图组织方式（4）
+A:toolbar application：基于工具栏的应用。工具栏主要是方便一屏放不下时的多页显示，各页之间围绕一个主题，例如settings菜单中。（注意将其和tab bar application 分开）。
+Q:多视图实现方式总结（1）
+A:xib 和 controller 关联上：给xib找主人；view对上view；
+Q:多视图实现方式总结（2）
+A:controller 是类，xib 也是类；
+Q:多视图实现方式总结（3）
+A:controller.view 即对应的xib。
+Q:iphone屏幕的坐标
+A:横轴x为320，纵轴y为480（去掉状态栏为460）；约定(0,0)为左上角。iphone5长一些，x不变，y为 568（1136/2）。
+Q:Retina技术
+A:IPhone4以后的产品采用Retina技术，分辨率为640x960(pixel)，但不影响编程，分辨率大了一倍，但是像素点个数不变。
+Q:资源兼容Retina屏的解决方案（1）
+A:界面按320x480分辨率，IP4以上让设备自动放大处理。（损失效果）
+Q:资源兼容Retina屏的解决方案（2）
+A:你需要准备2套资源文件，一套320x480另一套640x960。（程序包尺寸变大）---推荐用这种。
+Q:资源兼容Retina屏的解决方案（3）
+A:界面按640x960分辨率，程序内判断，如果为320x480则缩放。（损失效果）
+Q:使用两套资源时的文件命名规则
+A:使用这种命名规则后，系统会自动适配，而不用用代码分支来控制。filename.png （320x480）和 filename@2x.png（640x960）。
+Q:CGRect类
+A:CGRect frame = (x , y , width, height);
+
+// 总结和感悟
+Q:我自己的体会（1）
+A:一切皆是指针。
+Q:经典语录（1）
+A:如果无法保证子类行为的一致性，那么就用委托。
+Q:经典语录（2）
+A:屏幕上看到的，都是UIVew。
+Q:经典语录（3）
+A:如果对性能要求高，慎用Interface Build。
+Q:经典语录（4）
+A:copy是创建，retain是引用。
+Q:经典语录（5）
+A:alloc需要release,convenient不需要release。
+Q:经典语录（6）
+A:加载到NSArray/NSMutableArray里的对象，不需要负责release。
+Q:经典语录（7）
+A:IBOutlet,IBAction为你开启了访问Interface Build中对象的大门。
+Q:经典语录（8）
+A:UIApplicationDelegate负责应用程序的生命周期，而UIViewController负责View的生命周期。
+Q:经典语录（9）
+A:为了程序的健壮性，请尽量实现Delegate的生命周期函数。
+Q:经典语录（10）
+A:哥触摸的不是UIEvent,而是NSSet的UIView。
+
+// 内存使用
+Q:ARC
+A:既然你能发现我漏写了release，你为什么不能帮我自动加上呢。
+
+// 一些有效代码
+Q:如何换取全局的Delegate对象？
+A:Delegate对象维护程序的生命周期。[(MyAppDelegate*)[[UIApplication sharedApplication] delegate] MyMethodOrMyVariable];
+Q:Bundle的用途
+A:Main Bundle一种主要用途是使用程序中的资源文件，如图片、声音、plst文件等。可以理解成打包后的资源文件夹。
+Q:如何获得程序的主Bundle？
+A:NSBundle *bundle = [NSBundle mainBundle];   NSURL *plistURL = [bundle URLForResource:@"plistFile" withExtension:@"plist"];上面的代码获得plistFile.plist文件的路径。
+Q:如何设置和获取类中属性值？
+A:[self setValue: 变量值 forKey: 变量名];   [self valueForKey: 变量名];
+Q:如何让某一方法在未来某段时间之后执行？
+A:[self performSelector:@selector(方法名) withObject:nil afterDelay:延迟时间（s）]; 
+Q:如何获得设备版本号？
+A:float version = [[[UIDevice currentDevice] systemVersion] floatValue];
+Q:如何让某个控件在View的中心位置显示？
+A:（某个控件，比如label，View）label.center = self.view.center;
+Q:如何隐藏Status Bar？
+A:在程序的viewDidLoad中加入：[[UIApplication sharedApplication]setStatusBarHidden:YES animated:NO];
+Q:键盘透明效果
+A:textField.keyboardAppearance = UIKeyboardAppearanceAlert;
+Q:状态栏的网络活动风火轮是否旋转？
+A:[UIApplication sharedApplication].networkActivityIndicatorVisible，默认值是NO。
+Q:怎么检测对象类型？
+A:想知道对象是不是NSString，[myObject isKindOfClass:[NSString class]]；其它类推。
+Q:如果不知道是什么对象，如何得到？
+A:可以通过NSLog@(@"It is kind of class %@",[myObject class]);
+Q:返回随机数
+A:random();
+Q:如何更改注释中的公司名称？
+A:命令行中输入：defaults write com.apple.Xcode PBXCustomTemplateMacroDefinitions '{"ORGANIZATIONNAME" = "new-name.com";}'
+
+
+
+
+
+
+

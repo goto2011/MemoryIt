@@ -1,0 +1,223 @@
+// 升级方案
+// V0.7
+
+Q:升级功能的特殊之处是：
+A:（1）升级前后手机会重启，所以内存不管用了。（2）升级前后运行的代码不同；所以硬盘也不管用了。
+
+Q:版本号
+A:C00：国际通用版本
+Q:FTM模式
+A:开机进入recovery机器人界面，且屏幕中间显示“factory”。
+Q:是否进FTM？
+A:由misc分区中定义。如果需要改变，用工具MobileSDK，“启动android”按钮。
+Q:在recovery模式下如何切换usb端口？
+A:用PST工具可切换端口，“Phone info”-》“mode switch”。
+
+// cust升级
+Q:cust方案
+A:cust升级，即将系统的定制信息抽象为配置文件，然后升级到cust分区。
+Q:cust分区是个全集
+A:系统通过软链接方式将自己需要的子集载入系统，应用软件使用软链接访问资源，可做到代码归一化。
+Q:cust包的内容
+A:定制信息，以“运营商信息/国家“为路径组织起来。包括ap侧到的定制配置文件（主要是xml文件）、modem侧的logo和定制nv。
+Q:工程菜单读运营商信息
+A:是从 /data/custom.bin中读取的。
+Q:应用层不应该用运营商信息
+A:直接访问 /data/cust下的资源即可。cust分区对外归一化。
+Q:cust包升级方式
+A:1.升级时升级cust包；  2.fastboot flash cust [文件路径]
+Q:cust包升级到何处？
+A:cust分区，是个独立的分区。存放该产品的所有定制信息和logo。而vendor_id包是cust分区的控制开关。
+Q:vendor_id包内容
+A:包括：运营商信息 + 国家信息，比如vodafone/German。
+Q:vendor_id包升级方式
+A:1.生产工位打背贴时，通过后台写入； 2.升级vendor小包（只有几K）。
+Q:vendor_id写到哪里去？
+A:不管是产线，还是升级方式，都是写入oeminfo中的vendor id类型。
+Q:modem侧流程
+A:从oeminfo中读vendor id 到share memory，代码：tmc_init() -> parse_vendor_country_name()。
+Q:ap侧流程（1）
+A:aboot 将其从share memory读到cmdline中去。可以通过如下命令查看： cat /proc/cmdline。
+Q:ap侧流程（2）
+A:init进程会对比 /proc/cmdline（A） 和 /data/custom.bin（B） 的值。
+Q:ap侧流程（3）
+A:第一次开机，A与B都是空的。则：写 hw/default 到B，然后 start init.rc中的on cust，即手机使用默认定制项。然后重启。第二次开机，A空B不空，则正常启动。
+Q:ap侧流程（4）
+A:当升级vendor信息后开机，则A<>B，则：1.重启，先进行恢复出厂设置，然后做on cust操作（包括升级logo）；最后停在recovery界面下。
+Q:ap侧流程（5）
+A:其它几种情况：如果A=B（即正常开机），不做任何事。如果是B不存在，说明刚升过级，则把A写入B，然后进入cust升级流程。
+Q:cust升级前为什么要recovery？
+A:因为要把data分区中的软链接都删除，如果删除失败则cust升级会失败。以防万一，就把data分区格式化一遍。
+Q:on cust 流程做什么？
+A:on cust升级之init.rc中定义，完成三种功能：custcopy：copy一个文件；custsymlink：copy一个目录；load_oemlogo：copy logo。
+Q:升级logo的流程
+A:init进程代码中：init.rc中调用/system/bin/load_oemlogo, 后者为一个用户态进程，它先将cust/logo 文件放进share memory，然后通过rpc要求modem侧完成写入动作。
+Q:emmc下升级logo的流程
+A:emmc中，由于emmc可以访问oeminfo，所以直接写logo数据到oeminfo。
+
+Q:cust方案
+A:电信cust方案：发货，30M；国家入网 ，11M；电信入网 ，30M。total，75M。
+Q:cust方案
+A:放在system分区就没有这个问题。第三方apk放在cust中。
+Q:系统apk
+A:系统apk放在 /system/app下，不可删除，恢复出厂设置不会删除。
+Q:厂商预制apk
+A:厂商预制apk放在 /system/delapp，可输出，但是恢复出厂设置又会回来。
+Q:用户安装apk
+A:用户安装apk放在 /data/app下，可删除，恢复出厂设置会删除。
+
+Q:nv.bin方案
+A:定制nv的升级，属于cust包升级的一部分。在recovery和升级时完成。
+Q:nv.bin老方案
+A:系统启动后，aboot中判断 /data/test_nv.bin 是否存在，不存在则将/data/cust/nv/nv.bin中的值写入modem侧的efs，恢复完后创建文件/data/test_nv.bin.
+Q:新方案（A平台使用）
+A:既判断 /data/test_nv.bin，也判断 nv 60044，如果未激活，则恢复nv到modem，然后激活写入1。
+Q:新方案的优点
+A:在只升级efs的情况下也可以激活nv.bin升级。老方案不行。
+Q:nv.bin方案的注意事项
+A:升级efs之后，必须触发恢复出场设置，以触发nv.bin升级。否则nv.bin中的nv就丢失了。有产品出过此类事故。
+// 具体恢复方式要补充数据。
+
+// recovery
+Q:recovery（1）
+A:recovery是一种启动模式、一个分区、一个独立的运行单元，也是一个有main()入口的linux程序。
+Q:recovery（2）
+A:recovery有自己的kernel，以及运行其上的完成recovery各子功能的linux应用。
+Q:如何进入recovery？（1）
+A:1.按音量上键开机--》进recovery菜单；2.NV 453=1，进FTM模式；
+Q:如何进入recovery？（2）
+A:3.NV 60002=1（UMTS），或NV 60009=1（CDMA），进快速注册模式；4.NV 60004=1，settings菜单恢复出厂设置即是设置这个值后重启。
+Q:FTM子模式有哪几种？
+A:NV 453=1，进纯FTM模式；如果再加上NV 60003的值，进FTM各子模式。其中有：=1，wifi校准；=2，wifi环回测试；=3，BT校准。
+Q:recovery的主要功能
+A:格式化内置SD卡、格式化cache分区、备份data分区部分数据到cache分区、格式化data分区、备份数据恢复、格式化cache分区。
+Q:recovery格式化data分区前的备份目录
+A:格式化前将/data/dataapp中的文件备份到cache分区，格式化后再恢复回来。这个目录是放运营商定制apk的。
+Q:cache不够用的后果
+A:如果定制过多，超过cache分区大小，则recovery会失败。
+Q:recovery分为工厂级和用户级
+A:两者的区别是：工厂级会自动把hwuserdata分区也格式化掉；而用户级则提供选项。
+// recovery方案还要再细化 todo
+
+Q:misc分区作为模块间传递命令的载体
+A:好处是重启前后都在。大小一般为2M。
+Q:misc分区可以升级
+A:升级大包中有，以便初始化该分区。
+Q:misc分区的第1个字段
+A:关机充电
+Q:misc分区的第2个字段
+A:recovery信息
+Q:misc分区的第3个字段
+A:recovery掉电保护
+Q:misc分区的第4个字段
+A:ota升级标志
+Q:misc分区的第5个字段
+A:kernel panic信息
+// 要补充对数据的说明 todo
+
+// hota升级
+Q:hota升级的概念
+A:fireware over the air，无线补丁升级。我们代码中有三套方案：redband的fota方案、google提供的ota方案，以及华为自己实现的hota方案。一般用hota。
+Q:gota升级规则（1）
+A:部分运营商明确要使用google的ota服务器，那么我们就会提供gota功能。升级包需要放在google的服务器上。
+Q:gota升级规则（2）
+A:gota升级有如下规则：原始版本与目标版本的平台编译时间戳必须不同，如果相同则google服务器上无法检测到。
+Q:hota下载包的过程
+A:用户通过settings下载hota升级包。手机根据当前版本号或IMEI号，菜单中只能搜索到一个差分包。
+Q:自动下载
+A:默认自动下载周期是10天，周期可通过cust定制。同时，客户可在菜单中定制周期，也可以将自动检测关闭。
+Q:下载方式
+A:升级包下载采用android原生的DownloadProvider，支持断点续传。
+Q:差分包的保存位置
+A:升级包展开后，有sd卡的放在sd卡上，无sd卡的放在内置卡，内置卡空间不足，放在 /cache/fotapkg下。
+Q:cache分区有什么用？
+A:cache分区有两个功能：一是给hota升级用的；二是从电子市场下载apk的缓存空间（但是系统发现cache不够，会自动放在/data分区，所以这个是鸡肋）。
+Q:/data分区的问题
+A:hoto升级不会擦除/data分区，所以用户数据保留。但可以往/data新增文件。
+Q:hota升级过程（1）
+A:ap侧下载升级包，然后调用hota_start_update()，设置misc信息，然后系统重启，进入recovery模式；hota在recovery中完成。
+Q:hota升级过程（2）
+A:写入misc的信息如下：update_package=SDCARD:文件名.zip 或者 CACHE:文件名.zip；取决于差分包的保存位置。
+Q:hota升级过程（3）
+A:重启后，oemsbl阶段，如果是fota升级，则调用fota_update_main()进程升级，如果是hota，则什么也不会做。 oemsbl_fota_dload_check()中做这种区分。
+Q:hota升级过程（4）
+A:aboot中，recovery_init()中，根据misc信息，加载recovery.img。
+Q:hota升级过程（5）
+A:recovery中，get_args()函数从misc分区或command文件中获取升级包位置。
+Q:hota升级过程（6）
+A:调用ota_status_check()，读misc信息，确定是hota，还是fota。如果都不是，则清空misc和cache，然后重启。
+Q:hota升级过程（7）
+A:调用do_hota_update()，完成第一阶段升级，即差分升级。
+Q:hota升级过程（8）
+A:调用maybe_install_fireware_update()，将modem侧升级的update.app写入cache分区，设置misc信息为：hota_update_radio。
+Q:hota升级过程（9）
+A:手机再次重启，oemsbl_dload_check()中读取misc信息，然后调用dload_sd()完成对aboot、boot、recovery和modem侧诸模块升级。
+Q:hota升级过程（9）
+A:升级完成后，重启进入recovery，清除cache和misc对应字段，然后重启。
+Q:差分算法（1）
+A:差分升级只支持system、cust等ext4分区。具体过程如下：先检查新旧文件是否一致，一致就跳过；拷贝a文件，生成备份文件，叫a.backup。
+Q:差分算法（2）
+A:如果system剩余空间小于a文件的1.5倍，则放到/cache分区，如果cache空间也不够，则报错。
+Q:差分算法（3）
+A:对a.backup进行差分，升级完成后命名为a，拷贝到原处。这样做的目的是掉电保护。
+Q:差分算法（4）
+A:其实是用google ota的算法。对ext4的文件系统来说，有专门的命令对比两个ext4文件系统的差异，因此极大的降低了方案的复杂程度。
+Q:那么，hota与google ota的区别
+A:前者用华为自己的下载服务器，后者用google的。其它没有大的差异。
+Q:hota的差分升级程序
+A:升级程序不在recovery中，在升级包中。recovery会fork启动它，完成差分升级。
+Q:hota升级的log
+A:升级log放在 /data/last.log中，注意进入recovery会被覆盖。
+Q:hota升级包大小
+A:一个包30M左右，主要是amss比较大。经过压缩，所以扩展名为.zip。
+Q:hota升级的验证方法
+A:把升级包放在sd卡上，然后进入recovery模式。菜单第二条即可选择包路径。注意：root过的手机不能进行hota升级。
+Q:ota升级没有解决的问题
+A:当新的apk和老的配置参数不match时，会导致hota升级失败。这其实是apk自身的问题。可通过恢复出厂设置解决。
+Q:redband的fota方案的价格
+A:每台手机0.2美金。
+Q:hota升级可删除文件
+A:hota升级脚本为 /META-INF/com/google/android/updater-script, 在其中的delete字段中加一行：delete("/data/misc/wifi/load/ar6000.ko");
+Q:hota包修改后需要重新签名
+A:在linux中，运行命令： ./sig.sh hota.zip(文件名)。其中sig.sh为签名工具。
+Q:cust升级、hota升级与recovery的关系
+A:利用hota升级cust分区后，如果不进行recovery，则cust分区下修改的定制项部分不能完全生效。
+Q:google OTA升级的条件
+A:GOTA包要求原始版本与目标版本的平台编译时间必须不同，否则无法搜索到GOTA包。
+
+// 升级安全方案
+Q:升级包结构：MD5-RSA
+A:CRC模块经过MD5加密后，再经过私钥A加密后的数据，128B。
+Q:升级包结构：CRC
+A:升级包以下各模块的CRC值表。按模块顺序，每32K数据算一个16位的CRC值，不足32K的也算一个CRC。最大长度为128KB，对应升级包为1GB大小。
+Q:升级包结构：AMSS_ECC
+A:AMSS_ECC的目的是给amss加密。它分为密文和明文两部分，明文为amss模块的ecc列表，每512B字节算16位的ecc数据；密文为明文做md5，然后再rsa加密后的1024位数据。密文在前，明文在后。
+Q:安全启动方案
+A:amss模块存放在nand flash时，每个page（512字节）都有一个11字节的校验区，其中10字节为ecc校验值，我们取其中2字节作为校验对象。启动时，会和oeminfo中的对应数据进行对比，通过才正常启动。
+Q:对crc、ecc数据的校验方法
+A:oeminfo分区有公钥A，将密文解密为MD5数据，然后将明文进行MD5加密，两个对比，如一致则ok。
+Q:amss的ecc检验方案在智能机上没有使用。
+A:原因是没有必要去保护。
+Q:USB升级log
+A:在c:\download\。有用的log只有一行，unit13 block7016：fail。unit指模块，从1开始计算；block为块号，从1开始，每block 4K。
+
+// 升级代码
+Q:升级代码中的NAND_dispatch()
+A:该函数对应于jnand模块之 main_c()函数。
+Q:升级代码中对flash进行控制的命令
+A:命令字结构放在jtage_flash_param 中。
+Q:高通下 载工具：MSP
+A:msp -d；  msp -r /dev/sdc partition.bin 0；  msp -w /dev/sdc loadpt.cmm ./
+
+Q:升级后要重启几次？（过去情况）
+A:（1）第一次恢复出厂设置：格式化data分区；（2）rfnv恢复（modem）；（3）如果是CDMA手机，会有pESN的恢复（modem）（4）如果cust分区中存在nv.bin文件，会触发nv.bin的恢复。
+Q:升级后要重启几次？（最新情况）
+A:合入重启优化方案后，将2、3、4次重启合并为一次。方案是ap侧启一个服务rebootmgr，管理重启要求。
+
+
+
+
+
+
+
+

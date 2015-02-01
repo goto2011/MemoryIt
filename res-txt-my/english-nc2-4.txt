@@ -1,0 +1,209 @@
+// english-nc2-4
+// V1.0
+
+$第23课
+Q:poison 
+A:['pɔizn] n.毒药
+Q:illogical 
+A:[i'lɔdʒikəl] a.不合逻辑的，无章法的
+Q:octopus 
+A:['ɔktəpəs] n.章鱼
+Q:delicacy 
+A:['delikəsi] n.美味，佳肴
+Q:repulsive 
+A:[ri'pʌlsiv] a.令人反感的，令人生厌的
+Q:stomach 
+A:['stʌmək] n.胃
+Q:turn 
+A:[tə:n] v.感到恶心，反胃
+Q:fry 
+A:[frai] v.油炸
+Q:fat 
+A:[fæt] n.(动物、植物)油
+Q:abuse 
+A:[ə'bju:z, ə'bju:s] n.辱骂，责骂
+Q:snail 
+A:[sneil] n.蜗牛
+Q:luxury 
+A:['lʌkʃəri] n.奢侈品，珍品
+Q:associate 
+A:[ə'səuʃieit] v.联想到
+Q:despise 
+A:[dis'paiz] v.鄙视
+Q:appeal 
+A:[ə'pi:l] v.引起兴致
+Q:shower 
+A:['ʃəuə, 'ʃauə] n.淋浴
+Q:stroll 
+A:[strəul] n.溜达，散步
+Q:impulse 
+A:['impʌls] n.冲动
+Q:dozen 
+A:['dʌzn] n.12个，一打
+Q:fancy 
+A:['fænsi] v.喜爱，喜欢
+$第24课
+Q:skeleton 
+A:['skelitən] n.骷髅
+Q:seemingly 
+A:[] ad.表面上地
+Q:respectable 
+A:[ris'pektəbl] a.体面的，雅观的
+Q:conceal 
+A:[kən'si:l] v.隐藏，隐瞒
+Q:vivid 
+A:['vivid] a.生动的
+Q:dramatic 
+A:[drə'mætik] a.令人激动的，扣人心弦的
+Q:ruin 
+A:['ruin] v.毁坏
+Q:heroine 
+A:['herəuin] n.女主人公
+Q:fiction 
+A:['fikʃən] n.小说
+Q:varying 
+A:[] a.不同的
+Q:medicine 
+A:['medisin] n.医学
+Q:guestroom 
+A:[] n.(家庭中的)客房
+Q:unpack 
+A:['ʌn'pæk] vt.(从箱中)取出
+Q:stack 
+A:[stæk] v.(整齐地)堆放，排放；n.堆
+Q:underclothes 
+A:['ʌndəkləuðz] n.内衣
+Q:drawer 
+A:[drɔ:] n.抽屉
+Q:petrify 
+A:['petrifai] v.使惊呆
+Q:dangle 
+A:['dæŋgl] v.悬挂
+Q:sway 
+A:[swei] v.摇摆
+Q:unsympathetic 
+A:['ʌn'simpə'θetik] a.不表同情的，无动于衷的
+Q:medical 
+A:['medikəl] a.医学的
+$第25课
+Q:impressive 
+A:[im'presiv] a.给人深刻印象的
+Q:steamship 
+A:['sti:mʃip] n.蒸汽轮船
+Q:vessel 
+A:['vesl] n.轮船，大木船
+Q:era 
+A:['iərə] n.时期，时代
+Q:Java 
+A:['dʒɔvə] n.爪哇(印度尼西亚一岛)
+Q:rudder 
+A:['rudə] n.舵
+Q:roll 
+A:[rəul] v.颠簸，摇摆
+Q:steer 
+A:[stiə] v.掌握方向
+Q:temporary 
+A:['tempərəri] a.临时的
+Q:plank 
+A:[plæŋk] n.大块木板
+Q:fit 
+A:[fit] v.安装
+Q:Equator 
+A:[i'kweitə] n.赤道
+Q:delay 
+A:[di'lei] v.] n.耽误
+$第26课
+Q:influence 
+A:['influəns] v.影响
+Q:pride 
+A:[praid] v.骄傲
+Q:taste 
+A:[teist] n.鉴赏力;品尝
+Q:exert 
+A:[ig'zə:t] v.施加
+Q:subtle 
+A:['sʌbtl] a.微妙的，难以捉摸的
+Q:advertiser 
+A:['ædvətaizə] n.做广告的人
+Q:classify 
+A:['klæsifai] v.分类
+Q:magic 
+A:['mædʒik] a.有奇妙作用的
+Q:sample 
+A:['sa:mpl] n.样品
+Q:devise 
+A:[di'vaiz] v.设计，想出
+Q:capture 
+A:['kæptʃə] v.吸引，赢得
+Q:manufacturer 
+A:['mænju'fæktʃərə] n.生产厂家，制造商
+Q:wheelbarrow 
+A:['wi:l'bærəu] n.独轮手推车
+Q:boot 
+A:[bu:t] n.(汽车尾部的)行李箱
+Q:ingredient 
+A:[in'gri:djənt] n.配料
+Q:crane 
+A:[krein] n.起重机
+Q:anticipate 
+A:[æn'tisipeit] v.预期，预料
+$第27课
+Q:philosopher 
+A:[fi'lɔsəfə] n.哲学家
+Q:wisdom 
+A:['wizdəm] n.智慧
+Q:priest 
+A:[pri:st] n.牧师
+Q:spiritual 
+A:['spiritjuəl] a.精神上的
+Q:grudge 
+A:[grʌdʒ] v.不愿给，舍不得给
+Q:surgeon 
+A:['sə:dʒən] n.外科大夫
+Q:passer-by 
+A:[] n.过路人(复数passers-by)
+Q:dignity 
+A:['digniti] n.尊严
+Q:deliberately 
+A:[di'libəritli] ad.故意地
+Q:consequence 
+A:['kɔnsikwəns] n.后果，结果
+Q:afflict 
+A:[ə'flikt] v.使苦恼，折磨
+Q:ease 
+A:[i:z] n.容易
+Q:nature 
+A:['neitʃə] n.大自然
+Q:contempt 
+A:[kən'tempt] n.蔑视
+Q:envious 
+A:['enviəs] a.嫉妒的
+$第28课
+Q:wares 
+A:[] n.货物，商品
+Q:anchor 
+A:['æŋkə] v.?较旅籲. 锚
+Q:deck 
+A:[dek] n.甲板
+Q:silverware 
+A:['silvəwɛə] n.银器
+Q:tempt 
+A:[tempt] v.吸引；引诱
+Q:bargain 
+A:['ba:gin] v.讨价还价; n.便宜货
+Q:disembark 
+A:['disim'ba:k] v.下船上岸
+Q:assail 
+A:[ə'seil] v.纠缠
+Q:marble 
+A:['ma:bl] n.小玻璃球
+Q:inscribe 
+A:[in'skraib] v.刻写，雕
+Q:favour 
+A:['feivə] n.好处，优惠
+Q:gesticulate 
+A:[dʒes'tikjuleit] v.(讲话时)打手势
+Q:outrageous 
+A:[aut'reidʒəs] a.出人预料的；令人不悦的
+Q:thrust 
+A:[θrʌst] v.硬塞给；强行挤进

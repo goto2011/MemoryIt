@@ -1,0 +1,191 @@
+// english-nc2-7
+// V1.0
+
+$第39课
+Q:rough 
+A:[rʌf] a.崎岖不平的
+Q:boulder 
+A:['bəuldə] n.大石块
+Q:pit 
+A:[pit] v.使得坑坑洼洼
+Q:perturb 
+A:[pə'tə:b] v.使不安
+Q:underestimate 
+A:['ʌndər'estimeit] v.低估
+Q:swerve 
+A:[swə:v] v.急转弯
+Q:scoop 
+A:[sku:p] v.挖出
+Q:hammer 
+A:['hæmə] v.(用锤)击打，锤打
+Q:ominously 
+A:[] ad.有预兆的，不祥的
+Q:rip 
+A:[rip] v.划破，撕，扯
+Q:zigzag 
+A:['zigzæg] n."之"字形
+Q:shallow 
+A:['ʃæləu] a.浅的
+Q:grind 
+A:[graind] v.磨擦，磨
+Q:petrol 
+A:['petrəl] n.汽油
+Q:stretch 
+A:[stretʃ] n.一大片(平地或水)
+Q:obstacle 
+A:['ɔbstəkl] n.障碍
+Q:clump 
+A:[klʌmp] n.丛，簇
+Q:fissure 
+A:['fiʃə] n.(石，地的)深缝
+Q:renew 
+A:[ri'nju:] v.重复；更新
+Q:pleading 
+A:['pli:diŋ] n.恳求
+Q:gear 
+A:[giə] n.(汽车)排档
+Q:astride 
+A:[ə'straid] prep.骑，跨
+Q:crack 
+A:[kræk] n.缝隙
+Q:halt 
+A:[hɔ:lt] n.停
+Q:dashboard 
+A:['dæʃbɔ:d] n.(汽车上的)仪表盘
+$第40课
+Q:hoax 
+A:[həuks] n.骗局，戏弄
+Q:deception 
+A:[di'sepʃən] n.欺骗，骗局
+Q:self-respecting 
+A:[] a.自重的，自尊的
+Q:indulge 
+A:[in'dʌldʒ] v.使沉迷；享受
+Q:pneumatic 
+A:[nju:'mætik] a.气动的
+Q:drill 
+A:[dril] n.钻
+Q:silly 
+A:['sili] a.无意义的，无聊的
+Q:advance 
+A:[əd'va:ns] a.预先的，事先获得的
+Q:archway 
+A:['a:tʃwei] n.拱形门楼
+Q:remonstrate 
+A:[ri'mɔnstreit] v.规劝，告诫
+Q:ironically 
+A:[ai'rɔnikəli] ad.讽刺地
+Q:permission 
+A:[pə(:)'miʃən] n.许可
+Q:grant 
+A:[gra:nt] v.同意，准予
+$第41课
+Q:illusion 
+A:[i'lju:ʒən] n.幻想，错觉
+Q:pastoral 
+A:['pa:stərəl] a.田园的
+Q:breed 
+A:[bri:d] v.培育
+Q:rapture 
+A:['ræptʃə] n.欣喜
+Q:extol 
+A:[iks'tɔl] v.赞美，颂扬
+Q:superior 
+A:[sju:'piəriə] a.优越的
+Q:cockcrow 
+A:[] n.鸡叫
+Q:twitter 
+A:['twitə] v.(鸟)吱吱叫，嘁嘁喳喳叫
+Q:glint 
+A:[glint] v.闪烁
+Q:pasture 
+A:['pa:stʃə] n.牧场
+Q:idyllic 
+A:[ai'dilik] a.田园诗的
+Q:virtually 
+A:['və:tjuəli] ad.几乎，差不多
+Q:dubious 
+A:['dju:bjəs] a.可疑的，怀疑的
+Q:privilege 
+A:['privilidʒ] n.好处，特权
+Q:misery 
+A:['mizəri] n.苦难
+Q:acquaintance 
+A:[ə'kweintəns] n.熟人
+Q:treat 
+A:[tri:t] n.难得的乐事，享受
+Q:dweller 
+A:['dwelə] n.居住者
+Q:stagger 
+A:['stægə] v.摇晃，蹒跚
+Q:exotic 
+A:[ig'zɔutik] a.异乎寻常的，外来的
+Q:glow 
+A:[gləu] n.白炽光
+Q:descend 
+A:[di'send] v.下落，降临
+Q:tuck 
+A:[tʌk] v.缩进，隐藏
+Q:obstinately 
+A:[] ad.固执地，顽固地
+$第42课
+Q:caveman 
+A:[] n.(远古)洞穴人
+Q:pot-holing 
+A:[] n.洞穴探险，洞穴探险运动
+Q:solitude 
+A:['sɔlitju:d] n.孤独，寂寞
+Q:lure 
+A:[ljuə] v.引诱，诱惑
+Q:pot-holer 
+A:[] n.洞穴探险者
+Q:rambler 
+A:['ræmblə] n.漫步者，散步者
+Q:undertaking 
+A:['ʌndə'teikiŋ] n.任务，工作
+Q:foresight 
+A:['fɔ:sait] n.预见；深谋远虑
+Q:foretell 
+A:[fɔ:'tel] v.预言
+Q:Grenoble 
+A:[grə'noubl] n.格里诺布尔
+Q:chasm 
+A:[tʃæzəm] n.断层，裂口，陷坑
+Q:flaw 
+A:[flɔ:] n.小裂缝；缺点，瑕疵
+Q:distinguished 
+A:[dis'tiŋgwiʃt] a.杰出的，著名的
+Q:Everest 
+A:['evərist] n.珠穆朗玛峰
+Q:wade 
+A:[weid] v.涉水
+Q:waterfall 
+A:['wɔ:təfɔ:l] n.瀑布
+Q:gear 
+A:[giə] n.(汽车)排档
+Q:inflatable 
+A:[in'fleitəbl] a.可充气的
+Q:rubble 
+A:['rʌbl] n.碎瓦，瓦块
+Q:insistent 
+A:[in'sistənt] a.连续的，不断的
+Q:boom 
+A:[bu:m] v.轰响
+Q:waterspout 
+A:['wɔtəspaut] n.强大的水柱
+Q:cleft 
+A:[kleft] n.裂隙，开口
+Q:cavern 
+A:['kævən] n.大洞穴
+Q:stalagmite 
+A:['stæləgmait] n.石笋
+Q:stalactite 
+A:['stæləktait] n.钟乳石
+Q:limestone 
+A:['laimstəun] n.石灰石
+Q:glisten 
+A:['glisn] v.闪烁
+Q:eerie 
+A:['iəri] a.引起恐惧的，可怕的
+Q:dome 
+A:[dəum] n.穹窿，圆顶

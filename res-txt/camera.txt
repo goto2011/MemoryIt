@@ -1,0 +1,214 @@
+// camera
+// V0.8
+
+// 模组和工艺
+Q:camera模组硬件结构
+A:1、手机用Camera模组的组件在Lens(镜头）、分色滤色片（2R Cut)、感光Sensor、FPC(柔板）。Lens一般有个Hold(座）作支撑。
+Q:镜头
+A:镜头有玻璃和塑料两种。玻璃的透光率高，折射率低，成像效果好，但比较贵；塑料则相反。塑料还有个优势，它是非球面的，可校正畸变。一般令两者组合，以1G3P(1片玻璃3片塑料）。
+Q:分色滤色片
+A:分两种。RGB原色分色法。以及CMYK补色分色法，由青、洋红、黄、黑四种，但颜色不如RGB。
+Q:为何要分色？
+A:原因是Sensor上每个像素只能识别一种颜色，所以需要把射入的光线过滤。
+Q:感光Sensor IC
+A:是一种半导体芯片，其表面含有几十万到几百万的光电二极管。有两种类型：CCD和CMOS。
+Q:CCD
+A:工艺较成熟，生成稳定。以G-R-G-B型CCD为例，4个感光单元的中心点构成一个“像素点”，每个感光单元的光值复用了4次（边缘单元除外），所以每4个感光单元计算出4个信号。
+Q:CMOS
+A:被认为是未来的成像器材。成本低，速度快，功耗低。但目前工艺不成熟，坏点率较高，无法满足高分辨率的要求。其特点是一个感光单元对应一个像素。
+Q:光电二极管的原理
+A:P-N反向充电，在光照下放电，通过检测剩余电荷数量而得到光强信号。
+Q:何为bayer格式？（1）
+A:根据人眼对彩色的响应带宽不高，有大规模着色的特点，每个像素采样时没必要同时输出3种颜色。在采样时，奇数行分别采用R、G、R、G，偶数行分别采样G、B、G、B。
+Q:何为bayer格式？（2）
+A:这样，一个像素的R、G、B数据将由相邻的4个感光单元构成。这种采用方式，在基本不降低感官图像质量的前提下，可以将数据量降低60%以上。
+
+// 硬件和结构
+Q:camera结构设计问题
+A:成像方向（错90度，错180度）；视场角； 焦距。
+Q:camera常见硬件问题（1）
+A:驱动能力不足或过大；
+Q:camera常见硬件问题（2）
+A:上下电时序，导致点不亮、裂屏、噪点多。
+Q:camera常见硬件问题（3）
+A:I2C地址冲突。不同型号camera用不同地址。
+Q:camera常见硬件问题（4）
+A:连接器选择和线序有问题。
+Q:PCB设计（1）
+A:AVDD和AGND走线要严格：同层包地，相邻层不能有高速线（clk、data、sync），AVDD线宽要保证150mA的过流能力。AVDD干扰易引起camera条纹。
+Q:PCB设计（2）
+A:pclk和mclk要全程包地，相邻层要避免影响射频信号。
+Q:PCB设计（3）
+A:mclk匹配电阻靠近平台芯片，pclk匹配电阻靠近camera。这叫源端匹配原理。
+Q:PCB设计（4）
+A:I2C两根线走在一起，外侧包地。
+Q:PCB设计（5）
+A:hsync和vsync尽量包地。
+Q:PCB设计（6）
+A:各电源的滤波电容应尽量靠近camera的电源引脚。
+Q:camera 点亮步骤（1）
+A:按sensor spec的上电电压和时序上电，包括reset和shutdown配置。
+Q:camera 点亮步骤（2）
+A:建立I2C通讯，保证slave地址正确，保证地址和数据宽度正确。
+Q:camera 点亮步骤（3）
+A:初始化成功后，就应该有图像了。
+
+// 软件
+Q:手机镜头的特性
+A:定焦、定光圈。所以可玩性比较差。
+Q:camera接口
+A:分为并口和MIPI两种接口。后者在高像素camera中更常见。
+Q:防抖
+A:我们手机的防抖方式就是减少曝光时间，加快成像速度。还有物理防抖和数码防抖。
+Q:坏点和噪点（1）
+A:两者都会在图像上产生错误的颜色点。坏点是成像芯片上的物理损坏，会在每张图像上出现，一般不超过3个。
+Q:坏点和噪点（2）
+A:噪点则和芯片的稳定性有关，属于成像各环节出现的噪音信号，在图像上可能会成片出现。噪点可以通过后期处理去掉。
+Q:自动白平衡（1）
+A:由于不同环境下色温不同，如白炙灯下拍出的照片会明显偏绿，所以需要白平衡。白平衡处理对照片质量影响很大。
+Q:如何调整白平衡参数？
+A:在无自然光的实验室中，利用光源设备产生4种标准光源，在光源下对标准色板进行拍照；再用软件分析照片的色偏，就可以得到一组参数。通过这种参数的校准，尽量将拍出的照片和标准照片一样。
+Q:自动对焦的原理
+A:自动对焦的关键是测距。测距首先要确认镜头中的主要对象。
+Q:如何识别照片中的主要对象？
+A:当我们把一个画面的光线数据通过傅里叶变换到向量空间时，会发现画面中有明显轮廓的位置都是一个高频区域。通过这点，我们就可以达到目标。
+Q:颜色格式:YUV
+A:uma (Y) + chroma (UV) 格式， 一般情况下sensor支持YUV422格式，即数据格式是按Y-U-Y-V次序输出的。
+Q:颜色格式:RGB
+A:传统的红绿蓝格式，比如RGB565，其16-bit数据格式为5b R + 6b G + 5b B。G多一位，原因是人眼对绿色比较敏感。
+Q:颜色格式:Bayer
+A:sensor的每一像素对应一个彩色滤光片，滤光片按Bayer pattern分布。将每一个像素的数据直接输出，即RAW RGB data.
+Q:颜色格式:JPEG
+A:有些sensor，特别是低分辨率的，其自带JPEG engine，可以直接输出压缩后的jpg格式的数据。
+Q:颜色格式的比较1
+A:YUV一个像素占2B，如果像素太高在高时钟下基带芯片处理不过来，JPEG数据量就要小的多，所以不是YUV对基带芯片有要求而是基带芯片对输出数据速率有要求。
+Q:颜色格式的比较2
+A:RGB565一般用在很低端的基带芯片上，直接往屏上刷。YUV输出亮度信号没有任何损失，而色偏信号人眼并不是特别敏感，RGB565输出格式是R5G3 G3B5会丢掉很多原始信息，所以YUV图像质量和稳定性要比RGB565好的多。
+Q:颜色格式的比较3
+A:RAW数据每个像素就1B，数据量要少很多，一般5M以上sensor就只输出RAW数据以保证比较快的输出速度，后端挂一个DSP来处理输出的数据。
+
+Q:系统结构图1
+A:CPU到camera的连线有Vdd（供电）和 mCLK（时钟源），camera到CPU的连线有 pCLK、hsync、vsync（这三根都是为了保证同步）和8或10根data线。
+Q:系统结构图2
+A:其中mCLK设置为24M；pCLK传输一个像素点后click一次；hsync传输1行click一次；vsync传输一帧click一次。
+Q:系统结构图3
+A:camera的data输出有三种格式：最老的是RGB，后来是YUV，最新的camera都是用raw data方式，即bayer。raw data可以让vfe更有用武之地。
+Q:系统结构图4
+A:同步项和数据线都直接连接vfe。这是一个关键芯片，即图像前端处理。主要功能是处理白平衡、去边、去坏点、调节锐度、插值（如果需要的话）。同时，驱动代码通过I2C总线给vfe传递camera配置参数。
+Q:系统结构图5
+A:通过vfe的处理后，输出yuv格式的数据到内存中；内存一般为系统开机就预分配的PMEM，大小一般为36MB。
+Q:系统结构图6
+A:后面的处理分为两条线，如果是预览，则数据会送给MDSP，通过overlay技术显示在lcd上。
+Q:系统结构图7
+A:如果是拍照，则送到adsp（video core）编码为jpeg格式，然后送到文件系统保存。录像则两条线都送。
+
+Q:代码结构1
+A:代码分为三层，托管代码（java）、本地代码（C++/C）、核心态代码（C）。托管代码通过jni接口调用本地代码的c interface 层。
+Q:代码结构2
+A:interface 层通过IPC方式调用camera service层；service层以下则为hal层，包括google hal和qcom hal两层。
+Q:代码结构3
+A:这三层间都是直接call 函数；其中qcom hal层代码量最大。以上三层均为本地代码。
+Q:代码结构4
+A:核心态代码即camera driver，这部分代码比较少。qcom hal层通过syscall方式调用。
+
+Q:driver代码路径
+A:/kernel/drivers/media/video/msm，文件按camera型号和总线类型排列，比如 ov5647_sunny.c等。接口在 msm_camera.h。
+Q:driver组成部分
+A:driver 代码包括 sensor driver、vfe driver、flash driver（闪光灯）。重点是第一部分。
+Q:driver:sensor driver
+A:按照标注平台设备初始化后，做的最主要的事情是创建三个内核设备：/dev/msm_camera/control、config、frame。如果有前后camera，则有6个，即control0和control1，其它类推。
+Q:driver:control节点
+A:control节点负责提供命令接口，比如打开设备/关闭设备/拍照/预览。通过I2C发给vfe芯片，然后vfe芯片再按定义的方式转给sensor。
+Q:driver:config节点
+A:config节点负责提供配置camera的接口，主要是处理3A：AF（自动对焦）、AES（自动曝光）、AWB（自动白平衡）。
+Q:driver:frame节点
+A:frame节点负责提供数据通道。注意这个点得到的数据是vfe输出的，格式为yuv。raw data数据软件是得不到的。
+Q:driver初始化流程1
+A:驱动采用平台设备模型。首先是platform_device结构，包括 name、data 等字段，然后放在devices[]数组中。可以通过adb cat /dev/platform/msm_camera_s5k4 看到其中的一些参数。
+Q:driver初始化流程2
+A:其次是 platform_driver结构，包括 name、open、probe等字段。camera_start()调用时，会将device和driver通过name字段对应上。
+Q:driver初始化流程3
+A:识别camera类型，加载对应driver过程：// 待补充
+Q:driver初始化流程4
+A:初始化的重点是probe()函数，主要完成如下工作：alloc_chrdev_region：分配字符设备号，一次性分配15个；配置gpio、时钟；驱动I2C；上电、配置mclk；通过I2C读取camera id；申请三个内核设备节点。
+Q:闪光灯的控制
+A:// todo
+Q:sensor曝光和增益控制
+A:高通vfe芯片通过运算告知当前环境的亮度，若亮度较大，则减少曝光时间；反之，则增加。
+
+Q:高通hal层代码
+A:初始化时，生成三个线程：control、config、frame，这个明显是和driver的三个内核设备对应。修改的重点是config线程，负责配置3A。
+Q:高通hal层代码位置
+A:也是按照camera型号组织的，比如：vendor/qcom/proprietany/mm_camera/targets/tgtcommon/sensor/ov5647_sunny/。
+Q:3A代码路径：
+A:vendor/.../tgtcommon/isp3a.
+Q:sensor 效果
+A:/chrometix_ov6547_sunny_preview.h
+Q:camera特效代码
+A:vendor/.../futhers/bestshot/
+Q:闪光灯代码
+A:vendor/.../flash/
+Q:变焦代码
+A:vendor/.../zoom/
+Q:vfe代码
+A:vendor/.../targets/vef31/7x30/vfe_porview.c, vfe_proc_msg_evt.c。
+
+Q:高通hal的接口层代码
+A:hardware/qcom/camera/QualcommCameraHardware.cpp。比较重要。
+Q:hal层初始化流程1:control线程
+A:（1）open /dev/msm_camera；（2）load liboemcamera.so；（3）创建config线程。
+Q:hal层初始化流程2:start preview
+A:（1）注册pmem；（2）创建frame线程；（3）下发 start_preview命令；（4）唤醒config线程；（5）从frame线程获取数据，显示在overlay中。
+Q:拍照相关的内存使用
+A:预览使用的是preview buffer；拍照过程用两块，缩略图用thumbail buffer，照片用 spark shot buffer，这两块都来自pmem。
+
+Q:google hal层
+A:/framework/base/libs/ui/camera.cpp, ../ICamera.cpp, ../ICameraClient.cpp, ../ICameraService.cpp, 编译成 libui.so。
+Q:framework层代码
+A:/framework/base/camera/libcameraservice/cameraservice.cpp。编译 libcameraservice.so。
+Q:jni层代码
+A:/framework/base/core_java/android/hardware/camera.java，../jni/android_hardware_camera.cpp。编译成 libandroid_runtime.so。
+
+Q:应用层初始化流程
+A:camera.java 通过open(id)、或new camera(id)，获得一个camera对象；调用链为：getCameraService()--》HAL_Qualcommon start_camera()。然后，get_camerainfo()获取camera参数。
+Q:framework层预览流程1
+A:预览，包括 getCameraService()，open_camera(id)，设置预览界面，设置camera display orient，
+Q:framework层预览流程2
+A:接下来是设置相机参数（包括照片大小、预览大小、取景模式、质量），以及设置色彩面试、是否hdr（2张合成1张）、白平衡，最后是下发start preview命令。
+Q:framework层预览流程3
+A:对缩略图的处理：预览界面的右下角，显示上一张照片的缩略图。它是在上一次拍照时自动生成的。如果缩略图文件找不到，则会找当前最晚一张照片自动生成；如果一张照片都没有，则显示空白框。
+Q:framework层拍照流程
+A:应用下发take_picture命令后，fw层获取location（包括gps和network两种），检查存储空间（1.5M到3M，如果hdr，则翻倍），更新缩略图，创建菜单等。
+Q:前后camera切换流程
+A:// todo
+Q:HDR流程
+A:// todo
+Q:效果调试，哪些参数决定哪些效果
+A:// todo
+Q:高通的数字变焦方案（1）
+A:两个变量：sensor size：sensor大小是固定的。加上焦距一定，那么可以感光的物体就是确定的。pic size：图像大小可调，但有极限。
+Q:高通的数字变焦方案（2）
+A:比如sensor size=640*480，那么如果pic size也是这个值，就不可调。如果pic size=176*144时，可调大小，于是就是变焦。
+Q:高通的数字变焦方案（3）
+A:高通宣称支持10倍数字变焦，即（sensor size - pic size）/ 10。如果pic size采用最大分辨率，即=sensor size，就没有变焦功能了。
+
+// camera debug
+Q:camera裂屏的原因（1）
+A:原因是LCD自身刷新（Refresh：从GRAM中读取数据往屏上刷）和MDP的数据刷新（update：将数据从EBI2送到GRAM中）没有同步，分为两种情况：
+Q:camera裂屏的原因（2）
+A:一、LCD的Refresh rate小于MDP的update rate时，可能出现数据丢失的现象，即LCD还没有刷新完一帧，MDP就已经将GRAM中的数据更新了。
+Q:camera裂屏的原因（3）
+A:二、LCD的Refresh rate大于MDP的update rate时，可能出现同一数据重复刷新的现象。当一帧的数据一部分是新的，一部分是旧的时，就可能出现裂屏。这是主要情况。
+Q:管灯下的flick问题
+A:flick问题即照片上的明暗条纹。原因是我们用的管灯一般以50hz或60hz的频率来闪烁。当sensor以行为定位曝光时，如果存在灯管的波峰位置，光强度大，就比较明亮。反之则暗淡。
+Q:flick问题的解决方案
+A:保证每一次曝光都会在1/100的整数倍的话，则每部分的光能都一样，就不会有flick出现。代码：camera_antibanding_type。
+Q:camer测试
+A:标准灯箱、色卡、测试分辨率的chart（可破插值算法）、软件photoshop、照度计。
+
+
+
+
+
+
+

@@ -1,0 +1,221 @@
+// english-nc2-3
+// V1.0
+
+$第15课
+Q:appreciate 
+A:[ə'pri:ʃieit] v.欣赏，感激
+Q:pocket 
+A:['pɔkit] 零用钱
+Q:rattle 
+A:['rætl] v.格格作响
+Q:thrifty 
+A:['θrifti] a.节俭的
+Q:nephew 
+A:['nevju:] n.侄子，外甥
+Q:bounce 
+A:[bauns] v.弹起，跳起
+Q:pavement 
+A:['peivmənt] n.人行道
+Q:stick 
+A:[stik] v.卡住，夹住，不能再动
+Q:brigade 
+A:[bri'geid] n.旅，(消防)队
+Q:grease 
+A:[gri:s, gri:z] n.润滑油
+$第16课
+Q:prize 
+A:[praiz] a.珍贵的，宝贵的
+Q:tie 
+A:[tai] v.拴，系
+Q:theft 
+A:[θeft] n.偷盗行为，偷盗案
+Q:accuse 
+A:[ə'kju:z] v.指控
+Q:deny 
+A:[di'nai] v.否认
+Q:ashamed 
+A:[ə'ʃeimd] a.感到羞耻，惭愧
+Q:apologize 
+A:[ə'pɔlədʒaiz] v.道歉
+Q:dye 
+A:[dai] v.染
+$第17课
+Q:suspension 
+A:[səs'penʃən] n.悬，吊
+Q:agreeable 
+A:[ə'griəbl] a.宜人的
+Q:situation 
+A:['sitju'eiʃən] n.地点，地方
+Q:locate 
+A:[ləu'keit] v.位于
+Q:immortal 
+A:[i'mɔ:tl] a.永生的，流芳百世的
+Q:Brooklyn 
+A:['bruklin] n.布鲁克林
+Q:span 
+A:[spæn] n.跨度
+Q:cable 
+A:['keibl] n.缆索
+Q:concrete 
+A:['kɔnkri:t] n.混凝土
+Q:suspend 
+A:[səs'pend] v.悬挂
+Q:length 
+A:[leŋθ] n.根，段; 长度
+Q:estimate 
+A:['estimit, 'estimeit] v.估计
+Q:capacity 
+A:[kə'pæsiti] n.承受量，容量
+Q:immensity 
+A:[i'mensiti] n.巨大
+Q:elegant 
+A:['eligənt] a.优美别致的
+Q:faintly 
+A:['feintli] ad.微细地
+$第18课
+Q:current 
+A:['kʌrənt] n.电流,水流,气流
+Q:sculpture 
+A:['skʌlptʃə] n.雕塑
+Q:mistaken 
+A:[mis'teikən] a.错误的
+Q:gallery 
+A:['gæləri] n.美术馆
+Q:exhibit 
+A:[ig'zibit] n.展品，陈列品
+Q:oddly 
+A:['ɔdli] ad.古怪的
+Q:attach 
+A:[ə'tætʃ] v.连，系
+Q:sphere 
+A:[sfiə] n.球体
+Q:magnetize 
+A:['mægnitaiz] v.使磁化
+Q:repel 
+A:[ri'pel] v.排斥
+Q:flicker 
+A:['flikə] v.闪烁
+Q:emit 
+A:[i'mit] v.放射
+Q:flash 
+A:[flæʃ] v.闪光；闪过
+Q:prehistoric 
+A:['pri:hi'stɔ:rik] a.史前的，老掉牙的
+Q:electronic 
+A:[ilek'trɔnik] a.电子的
+Q:peculiar 
+A:[pi'kju:ljə] a.奇异的
+Q:shock 
+A:[ʃɔk] v.令人震惊，刺激人
+Q:emotionally 
+A:[i'məuʃənli] ad.感情上
+$第19课
+Q:dear 
+A:[diə] a.亲爱的；珍贵的；昂贵的
+Q:kidnapper 
+A:[ˈkɪdnæpə] n.绑架者，拐骗者
+Q:considerable 
+A:[kən'sidərəbl] a.相当大的
+Q:wealthy 
+A:['welθi] a.富的，有钱的
+Q:orderly 
+A:['ɔ:dəli] a.有规律的
+Q:disappearance 
+A:['disə'piərəns] n.失踪
+Q:anonymous 
+A:[ə'nɔniməs] a.匿名的
+Q:ransom 
+A:['rænsəm] n.赎金
+Q:cardboard 
+A:['ka:dbɔ:d] n.硬纸板
+Q:withdraw 
+A:[wið'drɔ:] v.(从银行)取钱
+Q:punctually 
+A:[ˈpʌŋktʃʊəlɪ] ad.准时地
+Q:astound 
+A:[əs'taund] v.使吃惊
+$第20课
+Q:pioneer 
+A:['paiə'niə] n.先驱
+Q:lord 
+A:[lɔ:d] n.对(英国)贵族的尊称；勋爵
+Q:Calais 
+A:['kælei] n.加来(法国港口城市)
+Q:overland 
+A:['əuvəlænd] a.陆上的
+$第21课
+Q:boxing 
+A:['bɔksiŋ] n.拳击
+Q:boxer 
+A:['bɔksə] n.拳击手
+Q:bare 
+A:[bɛə] a.赤裸的；空荡的
+Q:prizefighter 
+A:[ˈpraizˌfaitə] n.职业拳击手(尤指古时赤手拳击手)
+Q:crude 
+A:[kru:d] a.粗野的
+Q:marquis 
+A:['ma:kwis] n.侯爵
+Q:technically 
+A:['teknikəli] ad.严格根据法律意义地
+Q:science 
+A:['saiəns] n.科学
+Q:popularity 
+A:['pɔpju'læriti] n.名望
+Q:adore 
+A:[ə'dɔ:] v.崇拜，爱戴；非常喜欢
+Q:alike 
+A:[ə'laik] ad.一样地
+Q:fame 
+A:[feim] n.名声
+Q:eminent 
+A:['eminənt] a.著名的，杰出的
+Q:bitterly 
+A:['bitəli] ad.厉害地
+Q:bet 
+A:[bet] v.打赌
+Q:academy 
+A:[ə'kædəmi] n.专业学校
+Q:extravagant 
+A:[iks'trævigənt] a.浪费的，奢侈的
+Q:poverty 
+A:['pɔvəti] n.贫困
+$第22课
+Q:run 
+A:[rʌn] v.(戏剧，电影等)连演，连映
+Q:lines 
+A:[lainz] n.(剧本中的)台词
+Q:part 
+A:[pa:t] n.剧中的角色，台词
+Q:falter 
+A:['fɔ:ltə] v.支吾，结巴说
+Q:cast 
+A:[ka:st] v.选派……扮演角色
+Q:role 
+A:[rəul] n.角色
+Q:aristocrat 
+A:['æristəkræt] n.贵族
+Q:imprison 
+A:[im'prizn] v.关押
+Q:Bastille 
+A:[] n.巴士底狱
+Q:gaoler 
+A:[] n.监狱长，看守
+Q:colleague 
+A:['kɔli:g] n.同事
+Q:curtain 
+A:['kə:tn] n.(舞台上的)幕布
+Q:reveal 
+A:[ri'vi:l] v.使显露;泄漏
+Q:cell 
+A:[sel] n.单人监房，监号
+Q:blank 
+A:[blæŋk] a.空白的
+Q:squint 
+A:[skwint] v.眯着(眼)看，瞄
+Q:dim 
+A:[dim] a.昏暗的
+Q:sire 
+A:['saiə] n.(古用法)陛下
+Q:proceed 
+A:[prə'si:d] v.继续进行

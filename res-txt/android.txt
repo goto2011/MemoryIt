@@ -1,0 +1,86 @@
+// android应用 framework
+// V0.2
+
+// basic
+Q:应用的资源
+A:应用的资源，如图片、字符串等，都是放在apk文件中，而不是更常见的放在独立文件中。
+Q:应用的内存使用
+A:apk最多使用16M内存。
+Q:可拉伸的资源图片
+A:这是个优雅的设计，应对不同分标率的屏幕。.9.png图片。在满足一定条件下，可以被系统拉伸。
+Q:应用不退出
+A:android建议应用不给用户提供退出菜单。
+Q:相对布局
+A:尽可能使用相对布局。
+Q:google鉴权
+A:应用要使用system进程，必须找google鉴权。
+Q:界面布局
+A:界面布局都放在main.xml中。
+Q:debug工具
+A:ddms：log打印；traceview：call stack show；monkey：自动化界面测试。
+Q:apk代码主要元素
+A:activity：界面主体。
+Q:事件模型
+A:广播。
+Q:应用间通讯
+A:即intents，分为两种，知道类名的和找不到类名的。
+Q:sqlite
+A:嵌入式系统采用的数据库，基于文本。
+Q:URLs
+A:android使用URL字符串请求数据和动作，比如获得通讯录或打开网页。格式是：***://...，比如http等。
+
+Q:apk反向工程（1）
+A:获取apk（在/system/app下），和dex文件（在/data/dalvik-cache下）。
+Q:apk反向工程（2）
+A:用dex2jar，将dex文件转为jar文件。
+Q:apk反向工程（3）
+A:用jd-gui，将jar转化为java代码。
+
+Q:apk的构成
+A:apk = AndroidManifest.xml + dex + 资源 + 其它。
+Q:androidManifest.xml
+A:apk的声明文件，每个apk都有。用于描述apk的全局属性，以暴露给系统看，比如权限要求。
+Q:dex
+A:android java代码编译为dex格式（Dalvik execute）文件。dex格式是专为Dalvik设计的一种压缩格式。
+Q:Dalvik
+A:google开发的一种java虚拟机，是基于寄存器的。Dalvik有自己的bytecode, 并非使用 Java bytecode。所以不和sun java兼容。
+Q:dx
+A:dx 是一套工具，可以将 Java .class 转换成 .dex 格式. 一个dex档通常会有多个.class。由于dex有时必须进行优化，会使文件大小增加1-4倍，以ODEX结尾。
+Q:android第一次启动慢和dex文件的关系
+A:Dalvik第一次加载时，会对每个apk进行处理，生成其Cache文件，这个过程叫odex。目的是加快apk启动速度。所以手机第一次开机时间较长。
+
+// java语法
+Q:java没有头文件
+A:类的申明和实现放在一起。java的规则是一切都是类。
+Q:java和c++的区别1
+A:（1）没有预处理，比如#include，#defiine；（2）没有sturct、union、typedef等关键字。
+Q:java和c++的区别2
+A:（3）没有指针、多重继承、运算符重载；（4）没有goto；（5）没有自动类型转换，要求强制转换。
+Q:final关键字
+A:在类之前，表示该类不能被继承；在方法之前，表示该方法不能被子类覆盖；在变量之前，即定义常量，该常量不能被改变。
+Q:java命名空间1
+A:类静态变量在各实例间共享。静态方法即类方法，不能new一个类就可以使用。public的静态变量，也可以如此访问。
+Q:java命名空间2
+A:类方法只能访问自己的局部变量。对象变量可访问对象的数据成员，以及自己的局部变量。
+
+Q:用c/c++写应用
+A:出于跨平台考虑，核心算法可以用C实现。在android平台，用NDK生成c的so库，用java做上层产品实现。一切ok。
+
+Q:更新frameworks 后必须调用 updata-api
+A:目的是更新api。
+
+Q:ODEX版本
+A:ODEX是从apk中提取出来的可运行文件，即将classes.dex文件通过dex优化过程将其优化生成一个.dex文件单独存放，原APK中的classes.dex文件会保留。把那个文件预先提取出来作用是能加快软件加载速度和开机速度。
+
+Q:android权限系统（1）
+A:userid : 继承于linux，对于多个app，通过shareuid的方式可以使用同一个userid，主要承担一些目录访问权限之类的工作，比如私有目录只能由同一uid应用访问。
+Q:android权限系统（2）
+A:安装level：system level or app level，这个是根据应用的安装位置决定的，在system/app下安装的应用就是system level，在权限访问中会得到更多的权限，比如静默安装应用的权限等。
+Q:android权限系统（3）
+A:permission : 这个是最主要的权限控制，一般开发者开发应用主要是接触这个部分，在这部分中，会根据应用在AndroidManifest.xml中声明的use-permission而在访问相应api或资源时判断其是否有访问权限，比如常用的android.permission.INTERNET等。
+Q:android权限系统（4）
+A:signature: 签名，是权限系统的重要组成部分，对于系统签名的应用，会有一些特殊的功能，而shareuid等特性也是需要同一签名作为基础。此外，permission在设置/自定义其权限时也经常会使用到签名，比如控制只有我自己的应用才可以访问我自己定义的公开API。
+Q:android权限系统（5）
+A:除此以外，其实Android在uid的里面设置了一些预定义有特殊功能的uid，比如system/media等，在配置其system level的services的时候会用到。
+
+

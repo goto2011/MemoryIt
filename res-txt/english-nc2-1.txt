@@ -1,0 +1,199 @@
+// english-nc2-1
+// V1.0
+
+$第1课
+Q:puma 
+A:['pju:mə] n.美洲狮
+Q:spot 
+A:[spɔt] v.看出，发现
+Q:evidence 
+A:['evidəns] n.证据
+Q:accumulate 
+A:[ə'kju:mjuleit] v.积累，积聚
+Q:oblige 
+A:[ə'blaidʒ] v.使…感到必须
+Q:hunt 
+A:[hʌnt] n.追猎；寻找；v.打猎
+Q:blackberry 
+A:['blækbəri] n.黑莓
+Q:human 
+A:['hju:mən] 人类
+Q:corner 
+A:['kɔ:nə] v.使走投无路，使陷入困境；n.角落
+Q:trail 
+A:[treil] n.一串，一系列
+Q:print 
+A:[print] n.印痕
+Q:cling 
+A:[kliŋ] v.粘
+Q:convince 
+A:[kən'vins] v.使…信服
+Q:somehow 
+A:['sʌmhau] ad.不知怎么搞的，不知什么原因
+Q:disturb 
+A:[dis'tə:b] v.令人不安
+$第2课
+Q:equal 
+A:['i:kwəl] v.等于
+Q:vicar 
+A:['vikə] n.牧师
+Q:raise 
+A:['reiz] v.募集，筹(款)
+Q:torchlight 
+A:['tɔ:tʃlait] n.电筒光
+$第3课
+Q:goddess 
+A:['gɔdis] n.女神
+Q:archaeologist 
+A:['a:kiə'lɔdʒist] n.考古学家
+Q:Aegean 
+A:[i:'dʒi:ən] a.爱琴海的
+Q:explore 
+A:[iks'plɔ:] v.考察，勘探
+Q:promontory 
+A:['prɔməntəri] n.海角
+Q:prosperous 
+A:['prɔspərəs] a.(经济上)繁荣的，昌盛的
+Q:civilization 
+A:['sivilai'zeiʃən] n.文明
+Q:storey 
+A:['stɔ:ri] n.楼层
+Q:drainage 
+A:['dreinidʒ] n.排水
+Q:worship 
+A:['wə:ʃip] n.祟拜
+Q:sacred 
+A:['seikrid] a.宗教的，神圣的
+Q:fragment 
+A:['frægmənt] n.碎片
+Q:remains 
+A:[ri'meinz] n.遗物，遗迹，废墟
+Q:classical 
+A:['klæsikəl] a.(希腊和罗马)古文化的
+Q:reconstruct 
+A:['ri:kəns'trʌkt] v.修复
+Q:rest 
+A:[rest] v.倚放，放置
+Q:hip 
+A:[hip] n.屁股，臀部
+Q:full-length 
+A:[] a.(裙衣)拖地长的
+Q:graceful 
+A:['greisful] a.优雅的
+Q:identity 
+A:[ai'dentiti] n.身份
+$第4课
+Q:manual 
+A:['mænjuəl] a.体力的
+Q:collar 
+A:['kɔlə] n.衣领
+Q:sacrifice 
+A:['sækrifais] v.牺牲，献出
+Q:privilege 
+A:['privilidʒ] n.好处，特权
+Q:dustman 
+A:['dʌstmən] n.清洁工
+Q:corporation 
+A:['kɔ:pə'reiʃən] n.公司
+Q:overalls 
+A:[] n.工作服
+Q:shower 
+A:['ʃəuə, 'ʃauə] n.淋浴
+Q:secret 
+A:['si:krit] n.秘密
+Q:status 
+A:['steitəs] n.地位
+$第5课
+Q:editor 
+A:['editə] n.编辑
+Q:extreme 
+A:[iks'tri:m] n.极端
+Q:statistics 
+A:[stə'tistiks] n.统计数字
+Q:journalist 
+A:['dʒə:nəlist] n.新闻记者
+Q:president 
+A:['prezidənt] n.总统
+Q:palace 
+A:['pælis] n.王宫；宏伟的住宅
+Q:publish 
+A:['pʌbliʃ] v.出版
+Q:fax 
+A:[fæks] n.传真
+Q:impatient 
+A:[im'peiʃənt] a.不耐烦的
+Q:fire 
+A:['faiə] v.解雇
+Q:originally 
+A:[ə'ridʒənəli] ad.起初，原先，从前
+$第6课
+Q:smash-and-grab 
+A:[] n.砸窗户抢劫
+Q:arcade 
+A:[a:'keid] n.有拱廊的街道(两旁常设商店)
+Q:Piccadilly 
+A:[pikə'dili] n.皮卡迪利大街（伦敦市中心一条著名的街道）
+Q:jewellery 
+A:[] n.珠宝(总称)
+Q:necklace 
+A:['neklis] n.项链
+Q:ring 
+A:[riŋ] n.戒指；环形物
+Q:background 
+A:['bækgraund] n.背景
+Q:velvet 
+A:['velvit] n.天鹅绒，丝绒
+Q:headlight 
+A:['hedlait] n.(汽车等)前灯
+Q:blare 
+A:[blɛə] v.发嘟嘟声，吼叫
+Q:staff 
+A:[sta:f] n.全体工作人员
+Q:raid 
+A:[reid] n.偷袭
+Q:scramble 
+A:['skræmbl] v.爬行
+Q:fantastic 
+A:[fæn'tæstik] a.非常大的
+Q:ashtray 
+A:['æʃtrei] n.烟灰缸
+$第7课
+Q:mutilate 
+A:['mju:tileit] v.使残缺不全，毁坏
+Q:chew 
+A:[tʃu:] v.咀嚼
+Q:fiance 
+A:[fi'ɑ:nsei] n.未婚夫
+Q:microwave 
+A:['maikrəweiv] n.微波，微波炉
+Q:oven 
+A:['ʌvn] n.炉灶
+Q:safekeeping 
+A:['seif'ki:piŋ] n.妥善保管
+Q:Newcastle 
+A:['nju:'ka:sl] n.纽卡斯尔(英国港口城市)
+Q:identify 
+A:[ai'dentifai] v.鉴定，识别
+Q:spokeswoman 
+A:[] n.女发言人
+$第8课
+Q:monastery 
+A:['mɔnəstri] n.寺院，修道院
+Q:St.Bernard 
+A:[] 圣伯纳德
+Q:pass 
+A:[pa:s] n.关隘
+Q:watchdog 
+A:['wɔtʃdɔ:g] n.看门狗
+Q:rashly 
+A:['ræʃli] a.莽撞地，冒失地
+Q:enclosure 
+A:[in'kləuʒə] n.围场，圈地
+Q:monk 
+A:[mʌŋk] n.和尚，僧侣,修道士
+Q:privacy 
+A:['praivəsi] n.清静，隐居
+Q:skier 
+A:['ski:ə] n.滑雪者
+Q:Easter 
+A:['i:stə] n.复活节

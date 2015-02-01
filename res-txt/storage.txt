@@ -1,0 +1,343 @@
+// 内存 nand sd卡 emmc
+// V0.9
+
+// 内存
+Q:统一编址
+A:arm将ram、rom、片内内存、硬件寄存器、外设上的储存单元，统一放在同一个内存地址空间。参考文档见 software interface。
+Q:统一编址的访问
+A:一些地址是不可读的，还有一些则是不可写的。
+Q:mpu（Memory Protection Unit）
+A:相当于裁剪了的mmu，最大支持8个region。
+Q:arm的跳转指令只有26B的寻址空间
+A:链接两个较大.o文件，经常失败。解决办法是把函数调用改成函数指针调用。在汇编下可看到两种方式的不同。
+Q:虚拟内存
+A:是一种内存管理的技术，核心点有两个：（1）将多个物理内存碎片，整合为一个连续的地址空间；（2）还可以将部分内存交换到外存中，在需要时再交换进内核。
+Q:虚拟内存的好处
+A:提高物理内存的使用效率，使得大型程序的编写更简单。要支持多任务，虚存必不可少。
+Q:kernel的swap方案
+A:有两种方案：交换分区和交换文件。分区方式效率更高，因为文件是非连续的。
+Q:内存0地址禁止访问
+A:这是一个优雅的设计。为了捕捉空指针，将从0开始的若干K的地址空间设置为禁止访问。
+Q:mmu
+A:内存管理单元，负责管理内存的硬件。功能包括：虚存到物理地址的转换、内存保护、对cache的管理。
+Q:使用cache的一个经验值
+A:数据处理过程中，打开cache效率可提升一个数量级。当然，系统大部分时候已经是打开的。
+Q:内存页式管理（1）
+A:现代os中，内存以页的方式管理，每页大小位2的n次方，一般为4K。对于4K的页，地址尾部的12位作为页内偏移量，其余位为页号（虚拟页号）。
+Q:内存页式管理（2）
+A:mmu负责虚拟页号转换为物理页号，这个过程要map（映射）。如果没有找到，则产生缺页异常（page fault）。
+Q:内存页式管理（3）
+A:此时，os将尝试找空白页，并建立页表项，并将外存上的数据load到内存。如果没有空白页，则找最旧的页，将其原内容保存到外存，然后释放其空间作为它用。
+Q:内存页式管理（4）
+A:页表项记录内存页的信息，有脏位、存取位（标识最后访问时间）、mode（用户态还是核心态）、是否被cache。
+Q:oemsbl中关闭cache的接口
+A:mmu_invalidate_data_cache(先刷数据到内存)、cache_mmu_disable(去使能)。
+Q:linux内存分配方法
+A:SLUB方式。其调试宏为 CONFIG_SLUB_DEBUG=y，打开后有更详细的panic信息。
+
+Q:task初始化栈
+A:rex系统调用 mem_init_heap()，并传入一个全局变量数组buffer，这样就可以使用自己的heap，
+Q:公用的tmc的heap
+A:没有定义自己heap的task，则可以使用tmc的，有两个，一个512K，一个48K。
+
+Q:内存分区：code区
+A:又叫text段。存放代码本身。如果程序试图写这个区域，会产生一个P abort异常。
+Q:内存分区：ro区
+A:又叫常量段。存放只读数据，常量放在这里。如果程序试图写这里，会产生一个D abort异常。
+Q:内存分区：rw区
+A:又叫数据段。存放初始化为非零值的全局变量和静态变量。这些变量在code区另有一个映像，即内存中有两份。
+Q:内存分区：zi区
+A:又叫BSS段。存放初始化为零的全局变量和静态变量。在代码中只保留zi区的大小，运行时再展开，系统会自动间这个区域初始化为全零。
+Q:内存分区：nzi区
+A:重启时这段区域不做清零处理。目前只有diagdiag_nzi.c 中的trace_buffer[]放在nzi区，以保留死机log。长度为128K。
+Q:内存分区：堆栈区
+A:其它区域都是堆栈。
+Q:内存分区：相关代码
+A:内存初始化代码参见 oemsbl_ram_init()，可清晰看到rw区数据会逐个字节的copy，而zi区会清零。
+
+// NAND FLASH
+Q:flash的burst模式
+A:burst模式是指在给出一个起始地址后，flash会自动增加地址，以访问后面的地址，不需要CPU每次给出地址。这样做的好处是提高速度。比如一般模式下读一个数据需要85ns，新模式只需要14ns。
+Q:flash的buffer写功能
+A:一般写功能效率较低，如果先把待写入的数据放在buffer中，等积累一段时间后再统一写入flash，能大大加快写入速率。
+Q:volatile关键字
+A:在向总线上写数据的时候，总线的地址指针和数据指针必须用volatile进行定义，以防止编译过程中将某些数据的写入步骤给优化掉。
+Q:flash读写擦代码
+A:flash_nand_read_page()/ **_write_page()/ **_erase_block()
+Q:efs_sync() efs同步API
+A:sdcc_driver(), handle[1]--slot1--emmc，handle[0]--slot3--sdcard。其中card_type=SDCC_CARD_SDHC (0x5)
+Q:flash组织方式（1）
+A:flash依据partition/block/page三级来组织。其中，/partition 必须连续分布，其分区情况在partiton_nand.c中定义。
+Q:flash组织方式（2）
+A:page大小分三种。小块：1个block有16K，分为32page，每page 512字节；
+Q:flash组织方式（3）
+A:大块，1个block有128K，分为64page，每page 2K；4k nand的块更大，1个block有256K，分为64page，每page 4K。
+Q:flash组织方式（4）
+A:block为擦的基本单位，page为写的基本单位；一个page写后再写，必须先擦一遍。这就要求文件系统要支持垃圾回收（GC）机制。
+Q:flash组织方式（5）
+A:不管page size是多少，nand内部都是按512+16字节来组织的。其中512字节为用户数据，16字节为校验数据。其中10字节为ecc，1字节为坏块标识，剩余5字节闲置。
+Q:ECC
+A:error check &　correction.
+Q:坏块标识
+A:好块可标为坏块，坏块也可以标为好块。
+Q:ecc纠错机制
+A:ecc有纠错功能。高通使用里德-所罗门编码，每10字节的里所码，可以纠正4字节的错误。
+Q:ecc使能和去使能
+A:ecc使能与否是可以控制的，ecc使能时，每个page有512字节，不使能时，每个页528字节。
+Q:ecc读写错误的bit位计数的硬件寄存器
+A:error_bit_count = HWID_INM(NAND_FLASH_ECC_0, 7);
+Q:Nand 与 Nor的优劣对比
+A:Nand flash的特点时擦除及写入速度快；但不能在上面执行程序。而Nor则可以（芯片内执行，XIP）。Nor的成本较低，但写速度慢很多，目前基本不再使用。
+Q:flash driver代码位置
+A:drivers/flash/flash_msm.c 中的nand_probers_array[]。
+Q:坏块数量
+A:与三星的nand的供货合同规定，坏块不能超过2%。
+Q:不同厂商的nand flash如何区分？
+A:厂商ID、device id可以做区分。函数是？
+Q:mibib
+A:Multi-image boot info block。启动信息块。代码：mibib.h（没给我们代码）。其中，坏块表在第三块；bib信息在第四、五块的page 0，分区表在第四、五块的page 1；crc在第四、五块。
+Q:芯片封装方式
+A:一般nand和ddr（内存）封装在一起；多数情况下，emmc芯片也和ddr封装在一起，也有分开封装的情况。
+
+// EFS
+Q:高通efs初始化
+A:fs_task() -> efs_initialize() -> m_start() -> fs_pm_init() -> fs_ptable_init()
+Q:强制重新初始化efs
+A:fs_super_init()中，将fs_fresh_start 置为1，然后继续执行。
+Q:efs垃圾回收
+A:fs_alloc_gc_eval() -> fsi_alloc_gc_process()。
+Q:erase分区
+A:flash_prog_erase_partiton()
+Q:获取flash型号
+A:struct fs_device_data->flash_info->Marker_id, device_id
+Q:efs dricer 接口
+A:struct efs_device[]，有open_partiton(), bad_block_check()。
+Q:判断文件的存在性
+A:efs_stat()
+
+// SD卡
+Q:SD卡的线序
+A:10根线，其中data0-3（左右两边各2），clk（左4），GP1（左5），cmd（左6）.
+Q:data3
+A:data3还可以做识别功能，一般卡座上会另外加一根中断线侦听sd卡插拔，所以data3不这么用。
+Q:理论速度
+A:4根data线，若clk配成50Mhz，则理论速率为25MB。
+Q:如何识别高速卡（即class 2及以上）
+A:SD_ACMD13命令可获取sd_status，其中有speed class。
+Q:识别spec版本
+A:ACMD51命令，获取SCR寄存器，其中有版本号。
+Q:获取制造商信息及串号
+A:CMD2获取，CID寄存器中有。
+Q:SD卡初始化命令序列（1）
+A:power->clk->CMD5(寻找SD卡)->config clk(400K)->CMD0(reset)->
+Q:SD卡初始化命令序列（2）
+A:CMD8(识别SDHC)->CMD55(是否支持ACMD)->ACMD41(电压协商)->CMD1(idle)。
+Q:OCR
+A:存放电压区间，通过 CMD8，ACMD41，CMD8 来配置。
+Q:sdio控制器（1）
+A:sdio host控制器硬件在芯片中，共有4个控制器接口。其中sdio1给sd卡用，sdio2给wifi用，sdio3给emmc用（Y210-C10上用于dtv），sdio4没有用。
+Q:sdio控制器（2）
+A:相关的kernel log：sdio1的log是mmc0，sido2的log是mmc1，其它类推。
+
+Q:如何识别卡类型？（1）
+A:sd卡类型较多，其识别方法依赖于sd卡规范的明确要求：对于不能识别的命令不能做出任何回应。卡类型识别就是用这个机制。
+Q:如何识别卡类型？（2）
+A:上电后，cmd 0后发cmd 5，有回应即为SDIO卡。
+Q:如何识别卡类型？（3）
+A:没有回应，再发cmd 8，有回应即为SDHC卡；
+Q:如何识别卡类型？（4）
+A:没有回应，再发ACMA 41，有回应即为SD卡。
+Q:如何识别卡类型？（5）
+A:没有回应，接下来再发CMD 1，剩下的就只能是MMC卡了，如果这个也不能回应，则为不可识别的卡。
+
+// SDIO驱动代码
+Q:sd卡驱动代码
+A:/kernel/drivers/mmc/下面有三个目录：core、host、card。
+Q:core目录
+A:core是核心代码，与平台无关的通用代码放在这里。对 SDIO/SD/MMC的识别就在这个目录中。
+Q:host目录
+A:host对应的各硬件平台的sd host控制器与sd卡交互的代码，以及sd卡驱动参数配置。如msm_sdcc.c就是负责把sd命令发给sd卡。
+Q:card目录
+A:block.c即块设备驱动，负责把读写IO请求放入队列；queue.c即队列管理，把读写IO请求翻译为sd host控制器可以识别的信息。
+Q:平台设备部分
+A:GPIO配置、SD VDD电源和时钟等，在/kernel/arch/arm/board_msm7***.c中配置。这部分变化最多，独立出来方便管理。
+Q:核心的代码
+A:mmc_rescan()，sd卡检查。包括轮询、中断、开机检测和休眠恢复检查，最终都会调到这个地方。
+Q:开机检查的流程
+A:msmsdcc_probe() -> mmc_add_host() -> mmc_start_host() -> mmc_detect_change() -> mmc_rescan().
+Q:休眠恢复检查的流程
+A:msmsdcc_resume() -> mmc_resume_check() -> mmc_detect_change() -> mmc_rescan().
+Q:轮询检查的流程
+A:
+Q:中断检查的流程
+A:
+Q:SDIO初始化：注册SDIO设备
+A:msm7x30_init() -> msm7x30_init_mmc() -> msm_add_sdcc()，注册SDIO控制器到平台设备。msm_add_sdcc()会连续调用3次，后面也是。
+Q:SDIO初始化：注册SDIO驱动
+A:msm_sdcc.c中，sdcc模块初始化函数，msmsdcc_init()，注册sdcc driver到平台驱动，保证平台设备与平台驱动的对应关系。
+Q:SDIO初始化：驱动程序probe
+A:进入msmsdcc_probe()函数，初始化该控制器。
+Q:SDIO平台驱动data（参数）：ocr_mask
+A:sdio电压值，电压协商中使用，dtv用的是2.8v。
+Q:SDIO平台驱动data（参数）：translate_vdd
+A:电压配置接口，是个函数指针。
+Q:SDIO平台驱动data（参数）：mmc_bus_width
+A:位宽，1位、4位、8位，取决于data线有几根，emmc用8位的，其它用4位。
+Q:SDIO平台驱动data（参数）：频率设置
+A:msmsdcc_fmin：最低频率，114K；msmsdcc_fmid：居中频率，24M；msmsdcc_fmax：最高频率，48M（工作时使用这个）。
+Q:SDIO平台驱动data（参数）：nonremovable
+A:设置是否可插拔。=1不可以；=0可以。如果没置为1，mmc_rescan()不会调用 host->bus_ops->detect(host)，Siano启动不会被调用。
+Q:sdio模块的加载
+A:sdio模块的驱动在内核中注册的是platform驱动模型，分为device的注册和driver的注册。
+Q:注册sdio device
+A:msm7x2x_init_mmc  ->msm_add_sdcc(2, &msm7x2x_sdc2_data)  ->platform_device_register     //注册的设备名为msm_sdcc
+Q:注册sdio driver
+A:kernel/drivers/mmc/msm_sdcc.c，msmsdcc_init -> platform_driver_register(&msmsdcc_driver);
+Q:SD卡驱动的目录结构（3-1）
+A:Host: 针对特定主机侧SDIO模块接口：如msm_sdcc.c , s3cmci.c等。
+Q:SD卡驱动的目录结构（3-2）
+A:Core:整个MMC的核心代码，完成了MMC/SD/SDIO协议.
+Q:SD卡驱动的目录结构（3-3）
+A:Card:实现SD卡的块设备。
+Q:SD卡代码分层结构（5-1）
+A:用户空间，/dev下设备文件访问MMC/SD/SDIO 文件路径；
+Q:SD卡代码分层结构（5-2）
+A:内核空间，MMC Card层(对应具体的设备驱动，如MMC/SD卡块设备驱动，SDIO UART)。
+Q:SD卡代码分层结构（5-3）
+A:MMC core层，为上层设备驱动实现提供操作接口，和下层host注册提供机制)
+Q:SD卡代码分层结构（5-4）
+A:Host层(具体MMC/SD/SDIO控制器驱动层。如msm MMC/SD控制器驱动)；下面就是硬件层。编写SD卡相关驱动主要涉及的就是Host层，其余层不用考虑。
+
+// vold
+Q:mount service的代码
+A:nativeDaemonConnector.java 之 doCommand()。
+Q:外置sd卡插拔的uevent发出
+A:VolumeManager::handleBlockEvent()。
+Q:mount service下发mount命令的入口
+A:VolumeManager::mountVolume()。
+Q:mount service下发umount命令的入口
+A:Volume::unmountVol()
+Q:sd卡mount成功的log
+A:Volume sdcard state Changing 3(checking) -> 4(Mounted)
+Q:android上fat32文件系统检查工具
+A:/system/bin/fsck_msdos -p -f /mnt/sdcard。 作为对比：windows上，chkdsk h:。
+Q:fat check的处理流程
+A:在logswap()中，调用fork，创建一个子进程，然后调用child()加载 fsck_msdos工具进行检查。此时父进程通过wait(&status)来等待子进程执行完毕。
+
+// SD卡问题定位经验
+Q:SD卡问题定位经验1
+A:注意sd卡插拔诊断方式的处理代码，是否整个sd卡初始化流程根本没有启动。
+Q:SD卡问题定位经验2
+A:电源电压值是否ok，是否没有打开电源。出现的概率最高，也最好测出来。
+Q:SD卡问题定位经验3
+A:上电时序要符合协议要求；0到2.6V，要平滑上升。
+Q:SD卡问题定位经验4
+A:clk是否成功配下去，clk线的速率是否和配置值吻合;  data 线是否有数据交互。
+Q:SD卡问题定位经验5
+A:sd卡的类型是否成功识别；
+Q:SD卡问题定位经验6
+A:是否底层已经初始化成功，但是没有正确的通知上层，导致ui无法访问卡内容；
+Q:SD卡问题定位经验7
+A:读卡过程中出现 crc fail错误，一般为频率太高。我们的硬件信号在50M高速传输下有问题，将其改为20M此错误会不出现。
+Q:SD卡问题定位经验8
+A:sd卡 第0个sector 读失败，导致FAT32 无法mount，很像兼容性问题。格式化能解决该问题（数据会丢失）。
+Q:SD卡问题定位经验9
+A:文件夹混乱问题。使用 winhex.exe 定位。
+Q:SD卡问题定位经验10
+A:SD卡初始化时间过长，导致时序相关问题。（升级时vvs不恢复）
+Q:SD卡问题定位经验11
+A:SD卡访问速度太慢问题。排除卡自身的问题后，软件方面的原因较可能是时钟频率设得太低。
+Q:SD卡问题定位经验12
+A:sd卡错误处理中断注册的问题。高通代码中对sd卡的大部分中断都没有处理，导致一些问题。遇到了注册上即可。
+Q:SD卡问题定位经验13
+A:在上层调用底层接口往sd卡写数据之前，应该清一下cache；因为底层sd卡读写是采用DMA 方式。如果cache和内存有不同步的地方，则DMA会写入错误的数据。
+Q:SD卡问题定位经验14
+A:由于高通默认配置中，蓝牙电源使用GP1配置，而我们的硬件上GP1电源给SD卡。但是相关代码没有按照这个修改来调整，导致蓝牙开关电源时实际上是在控制GP1电源，最终导致sd卡状态不正常。
+Q:SD卡问题定位经验15
+A:文件名超长问题。
+Q:SD卡问题定位经验16
+A:文件只读导致无法修改、删除、剪贴。
+Q:SD卡问题定位经验17
+A:seek超过文件大小的问题。
+Q:SD卡问题定位经验18
+A:文件系统性能。
+
+// EMMC
+Q:emmc初始化的代码
+A:board_msm7x27a.c，msm7x27a_init_mmc()。
+Q:配置sdcc gpio的代码
+A:board_msm7x30.c，msm_gpio sdc4_cfg_data[], {GPIO_CFG(58, 1, GPIO_CFG_OUTPUT, ..., GPIO_CFG_15MA (启动能力), "sdc4_clk"};
+Q:EMMC特性1
+A:EMMC 就是sd卡，最小容量为2G，在7x30上替代flash作为存储介质。
+Q:EMMC特性2
+A:emmc的一个主要特征是只允许一个执行单元访问，所以在app阶段，app负责访问emmc，而modem侧的amss不能直接访问。
+Q:EMMC特性3：efs如何使用？
+A:使用ram fs。amss 读写ram fs；其读写请求会被app侧获取，然后app访问真正的emmc，然后app把数据同步到ram fs；最后amss 从ram fs 中得到数据。也就是说，amss 必须异步的调用。
+Q:EMMC特性4
+A:在boot阶段，osbl 能直接访问emmc，因为此时osbl 是唯一的执行单元。
+Q:EMMC特性5
+A:也有分区表；但是生成方式变了，通过 xml+loadpt.cmm = bin文件；不需要编译。
+Q:EMMC特性6
+A:mbr 下有三个主分区+一个扩展分区（ebr）；ebr 下面之后可以容纳15 个逻辑分区。
+Q:如何新建分区？
+A:修改这个文件：AMSS\products\7x30\tools\jsdcc\partition_load_pt\partition.xml，添加如下代码:<extended order="1" type="59" label="OEMINFO" size="24576" readonly="false"><file name="***.mbn" offset="0"/></extended>
+Q:如何新建分区？
+A:其中：order: 分区的位置；type: 分区id, 自己定义；size: 大小, 定位为sector, 即 512Byte；file name: 有这个选项后, 会自动生成下载该分区的cmm脚本.
+Q:如何新建分区？
+A:运行 loadpt.exe ，生成 partition.bin 及cmm脚本。
+Q:美光对emmc问题的答复1
+A:比如说我们分了 10M 的SLC分区，如果读写过程中有某个SLC的扇区损坏，这种情况下有没有其他的SLC冗余块供替换？这10M的SLC分区本身就包含了将来作为替换使用的扇区，这点跟普通的NAND相似。
+Q:美光对emmc问题的答复2
+A:比如2G的eMMC还剩下了2M空间，均衡读写是不是只限于这2M内部？不是，在你能看到的这2M剩余空间以外，有专门用作均衡读写的空间。磨损均衡算法在需要的时候会将2M空间内的某些sector跟均衡读写空间内的sector交换，2M剩余空间保持不变。
+Q:美光对emmc问题的答复3
+A:eMMC的读寿命：读的寿命，SLC和MLC相同，支持到最大100K的读取次数。擦写的寿命，不能简单的以次数来衡量，eMMC含有FTL算法在其中来进行均衡擦写，所以很难从eMMC这个接口层定义类似于Raw NAND的擦除次数。
+Q:美光对emmc问题的答复4
+A:通常的一种做法是对eMMC进行大量数据不停的写入，然后观察最终能写多少数据后，eMMC不能稳定工作了。4.4标准后，在配置成SLC的分区上可以达到最高100K的擦写次数。
+Q:美光对emmc问题的答复5
+A:eMMC 会保留一些冗余块去替换坏块，在极端情况下如果这些冗余块被用完了，eMMC会怎么处理？是不是整块eMMC会报废？在这种极端情况下eMMC会进入写保护状态，只允许对eMMC进行读取和擦除操作，不允许新的写操作。
+Q:osbl 识别mbr分区
+A:get_hotplug_dev_handle():
+Q:查看mount过程相关log
+A:看kernel log，关键字是：fsck_msdos。
+Q:如何判断emmc厂商？
+A:kernel log中，mmcblk0:mmc 0:001 XINYH 3.6GiB。
+Q:emmc读写速率
+A:emmc是8根data线，时钟最大是50mhz，所以理论速率为50MBs，实测数据是10MBs。
+Q:SLC
+A:是Single Layer Cell 单层单元。SLC的特点是成本高、容量小、速度快。SLC闪存的优点是复写次数高达100000次，比MLC闪存高10倍。
+Q:MLC
+A:是Multi-Level Cell多层单元。MLC的特点是容量大，但速度慢。MLC的每个单元是2bit的，相对SLC来说整整大了一倍。不过，由于结构复杂，出错的几率增加，需要做错误修正，导致其性能大幅落后于SLC闪存。 
+
+Q:emmc read only问题的现象1
+A:开机时进恢复出厂设置界面，如果界面显示read_only打印，则可判断是read_only问题。
+Q:emmc read only问题的现象2
+A:确认kernel msg中是否有如下log：EXT4-fs(mmcblk0p18):Remounting filesystem read_only.
+Q:emmc read only问题的现象3
+A:init:unable to open persistent property file /data/property/persist.***** errno:5.
+
+// 现代emmc不开机问题结论
+Q:现代emmc不开机问题结论（1）
+A:现代已查明emmc内部的maping table问题时导致data分区损坏的原因，并已通过fireware修正。我们已确认该修正的有效性。
+Q:现代emmc不开机问题结论（2）
+A:emmc整体只读问题，现代给出的原因有两个。1.bad block数目过多。fireware的bug导致误判 bad block数目太多，表现为cmd 25超时。升级固件可解决。
+Q:现代emmc不开机问题结论（3）
+A:2.system block损坏，emmc erase时没有异常掉电保护，导致emmc system block损坏，其表现为ID无法识别和cmd 25超时，需要升级固件。
+
+// 文件系统
+Q:fat32长文件名方案1
+A:长文件名字段最长256个字符（unicode），短文件名字段最长8个字符（只支持asc码）。如果编码格式不是asc，则用长文件名字段存储。
+Q:fat32长文件名方案2
+A:长文件名目录项中有个字段会保存短文件名的crc校验值，如果较验时失败，则认为文件名被破坏。
+Q:fat32长文件名方案3
+A:目录项中对于长文件名使用的编码方式是unicode，对于短文件名中的中文字符为GB码。这个要注意。
+Q:FAT32定义boot sector头4个字节的内容
+A:0x55AA
+Q:yaffs文件系统的一个bug
+A:yaffs文件系统没有superblock块，所以如果分区上有非yaffs的数据，也会被当作yaffs文件系统的一部分被mount进来，导致很多问题。
+Q:yaffs文件系统的这个bug的解决方案
+A:将整个分区完全擦除。用yaffs文件系统必须保证用之前有完全擦除的动作。
+
+Q:I版本支持内置卡
+A:/data分区和内置卡为同一个分区。代码：
+
+

@@ -1,0 +1,180 @@
+// english-nc2-6
+// V1.0
+
+$第35课
+Q:justice 
+A:['dʒʌstis] n.正义，公正；司法
+Q:court 
+A:[kɔ:t] n.法院
+Q:law 
+A:[lɔ:] n.法律
+Q:innocence 
+A:['inəsns] n.无辜
+Q:undertake 
+A:['ʌndə'teik] v.承担，着手做
+Q:arduous 
+A:['a:djuəs] a.艰苦的，艰难的
+Q:abstract 
+A:['æbstrækt] a.抽象的
+Q:concept 
+A:['kɔnsept] n.概念，观念
+Q:mete 
+A:[mi:t] 给予，处置
+Q:interference 
+A:['intə'fiərəns] n.干涉
+Q:accord 
+A:[ə'kɔ:d] v.] n.一致
+Q:premises 
+A:[] n.房屋
+Q:convert" 
+A:[kən'və:t] 
+Q:] 'kɔnvə:t] "v.转变，改变
+Q:disused 
+A:['dis'ju:zd] a.不再用的，废弃的
+Q:fireplace 
+A:['faiəpleis] n.壁炉
+Q:muffle 
+A:['mʌfl] v.捂住，压抑
+Q:chip 
+A:[tʃip] v.砍，削，凿；碎裂
+Q:blacken 
+A:['blækən] v.使变黑
+Q:emerge 
+A:[i'mə:dʒ] v.(从某处)出现
+$第36课
+Q:credulous 
+A:['kredjuləs] a.轻信的
+Q:improbable 
+A:[im'prɔbəbl] a.不大可能的
+Q:obscure 
+A:[əb'skjuə] a.不起眼的；v.遮掩，模糊
+Q:maidservant 
+A:['meidsə:vənt] n.女仆，女佣
+Q:presume 
+A:[pri'zju:m] v.假定
+Q:wickedly 
+A:[] ad.心眼坏地，居心叵测地
+Q:plot 
+A:[plɔt] v.密谋
+Q:downfall 
+A:['daunfɔ:l] n.倒台，垮台
+Q:naive 
+A:[na:'i:v] a.天真的
+Q:unacceptable 
+A:['ʌnək'septəbl] a.不能接受的
+Q:conspire 
+A:[kən'spaiə] v.(事件)巧合促成
+Q:incredible 
+A:[in'kredəbl] a.难以置信的
+Q:resemblance 
+A:[ri'zembləns] n.相似
+Q:scorn 
+A:[skɔ:n] n.嘲弄，挖苦
+Q:acquaint 
+A:[ə'kweint] v.使了解
+Q:reunite 
+A:['ri:ju:'nait] v.使团聚
+Q:assume 
+A:[ə'sju:m] v.假定，认为
+$第37课
+Q:express 
+A:[iks'pres] n.快车 a.高速的
+Q:punctual 
+A:['pʌŋktjuəl] a.准时的
+Q:condition 
+A:[kən'diʃən] v.使习惯于
+Q:unshakable 
+A:[ʌn'ʃeikəbl] a.不可动摇的
+Q:faith 
+A:[feiθ] n.信任
+Q:cancel 
+A:['kænsəl] v.取消
+Q:exceptionally 
+A:[] ad.例外地
+Q:dislocate 
+A:['disləkeit] v.打乱(计划等)
+Q:blame 
+A:[bleim] v.责怪
+Q:consult 
+A:[kən'sʌlt] v.请教，查阅
+Q:direct 
+A:[di'rekt] ad.径直地
+Q:odd 
+A:[ɔd] a.奇怪的，异常的
+Q:reflect 
+A:[ri'flekt] v.细想
+Q:advantage 
+A:[əd'va:ntidʒ] n.优势
+Q:mighty 
+A:['maiti] a.强大的，有力的
+Q:dawdle 
+A:['dɔ:dl] v.慢吞吞地动或做
+Q:chug 
+A:[tʃʌg] v.咔嚓咔嚓地响
+Q:lodge 
+A:[lɔdʒ] v.提出；n.小屋，(旅游区的)小旅馆
+Q:complaint 
+A:[kəm'pleint] n.抱怨
+Q:triumph 
+A:['traiəmf] n.胜利; v.战胜
+Q:asterisk 
+A:['æstərisk] n.星号(
+Q:conduct" 
+A:['kɔndəkt] 
+Q: 
+A:[kən'dʌkt] "v.引向，引导
+$第38课
+Q:calendar 
+A:['kælində] n.历法，日历
+Q:historian 
+A:[his'tɔ:riən] n.历史学家
+Q:unique 
+A:[ju:'ni:k] a.无与伦比的；独特的
+Q:steadily 
+A:['stedili] ad.不断地
+Q:solely 
+A:['səuli] ad.唯一地
+Q:video 
+A:['vidiəu] n.录像
+Q:CD-ROM 
+A:[] n.(只读)光盘驱动器
+Q:bewilder 
+A:[bi'wildə] v.令人眼花缭乱
+Q:deduce 
+A:[di'dju:s] v.推断，推理
+Q:scanty 
+A:['skænti] a.不足的，贫乏的
+Q:mammoth 
+A:['mæməθ] n.(古生物)长毛象
+Q:tusk 
+A:[tʌsk] n.獠牙，长牙，象牙
+Q:nomad 
+A:['nɔməd] n.游牧民
+Q:correlate 
+A:['kɔrileit] v.使相互联系
+Q:clue 
+A:[klu:] n.线索
+Q:insignificant 
+A:['insig'nifikənt] a.不重要的
+Q:shed 
+A:[ʃed] v.使流出，泻
+Q:advent 
+A:['ædvənt] n.出现，到来，来临
+Q:agriculture 
+A:['ægrikʌltʃə] n.农业
+Q:assumption 
+A:[ə'sʌmpʃən] n.假定，设想
+Q:dot 
+A:[dɔt] n.小圆点
+Q:symbol 
+A:['simbəl] n.符号
+Q:engrave 
+A:[in'greiv] v.雕刻
+Q:ivory 
+A:['aivəri] n.象牙制品
+Q:phase 
+A:[feiz] n.月相，天相
+Q:primitive 
+A:['primitiv] a.原始的
+Q:depict 
+A:[di'pikt] v.描画，描绘

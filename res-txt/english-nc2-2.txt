@@ -1,0 +1,201 @@
+// english-nc2-2
+// V1.0
+
+$第9课
+Q:fascinate 
+A:['fæsineit] v.迷住，吸引住
+Q:affectionate 
+A:[ə'fekʃnit] a.充满深情的，柔情的
+Q:mysterious 
+A:[mis'tiəriəs] a.神秘的，难以理解的
+Q:submissive 
+A:[sʌb'misiv] a.服从的，顺从的
+Q:feline 
+A:['fi:lain] a.猫的
+Q:independence 
+A:['indi'pendəns] n.独立，独立性
+Q:high-rise 
+A:[raiz] a.高层的
+Q:windowsill 
+A:[ˈwɪndəʊˌsɪl] n.窗槛，窗台
+Q:paratrooper 
+A:['pærətru:pə] n.伞兵
+Q:squirrel 
+A:['skwirəl] n.松鼠
+Q:air-resistance 
+A:[] n.空气阻力
+Q:impact 
+A:['impækt] n.冲击力
+$第10课
+Q:Southampton
+A:[sauθ'æmptən]n.南安普敦(英国港口城市)
+Q:colossal 
+A:[kə'lɔsl] a.庞大的,巨大的
+Q:watertight 
+A:[ˈwɔ:tətait] a.不漏水的
+Q:compartment 
+A:[kəm'pa:tmənt] n.(轮船的)密封舱
+Q:flood 
+A:[flʌd] v.充满水
+Q:float 
+A:[fləut] v.漂浮，飘浮
+Q:tragic 
+A:['trædʒik] a.悲惨的
+Q:liner 
+A:['lainə] n.班船, 大客轮；班机
+Q:voyage 
+A:[vɔidʒ] n.航行
+Q:iceberg 
+A:['aisbə:g] n.冰山
+Q:lookout 
+A:['luk'aut] n.瞭望员
+Q:collision 
+A:[kə'liʒ(ə)n] n.碰撞
+Q:narrowly 
+A:['nærouli] ad.刚刚，勉强地
+Q:miss 
+A:[mis] v.避开
+Q:slight 
+A:[slait] a.轻微的
+Q:tremble 
+A:['trembl] v.震颤
+Q:faint 
+A:[feint] a.微弱的
+Q:horror 
+A:['hɔrə] n.恐惧
+Q:abandon 
+A:[ə'bændən] v.抛弃
+Q:plunge 
+A:[plʌndʒ] v.投入，跳入；陷入
+Q:lifeboat 
+A:[ˈlaɪfbəʊt] n.救生船
+$第11课
+Q:guilty 
+A:['gilti] a.犯罪的，违法的
+Q:tolerant 
+A:['tɔlərənt] a.宽容的
+Q:declare 
+A:[di'klɛə] v.申报
+Q:hardened 
+A:[ˈhɑ:dənd] a.有经验的
+Q:professional 
+A:[prə'feʃənl] a.职业的，专业的
+Q:smuggler 
+A:['smʌglə] n.走私者
+Q:officious 
+A:[ə'fiʃəs] a.爱管闲事的
+Q:confidently 
+A:[ˈkɔnfədəntlɪ] ad.自信地
+Q:dreadful 
+A:['dredful] a.可怕的，一团糟的
+Q:pounce 
+A:[pauns] v.猛抓，扑住
+Q:perfume
+A:['pə:fju:m] n.香水
+Q:sarcastically 
+A:[sa:'kæstikəli] ad.讽刺地
+Q:exempt 
+A:[ig'zempt] a.被免除的
+Q:duty 
+A:['dju:ti] n.税
+Q:gel 
+A:[dʒel] n.凝胶，发胶
+Q:mixture 
+A:['mikstʃə] n.混合物
+Q:unscrew 
+A:[ʌn'skru:] v.拧开
+Q:nostril 
+A:['nɔstril] n.鼻孔
+Q:chalk 
+A:[tʃɔ:k] n.粉笔
+Q:baggage 
+A:['bægidʒ] n.行李
+$第12课
+Q:desert 
+A:['dezət, di'zə:t] v.(军队中)开小差
+Q:unrealistic 
+A:['ʌnriə'listik] a.不真实的
+Q:paradise 
+A:['pærədais] n.天堂，乐土
+Q:wretched 
+A:['retʃid] a.可怜的，艰苦的
+Q:starve 
+A:[sta:v] v.挨饿
+Q:element 
+A:['elimənt] n.成分
+Q:opportunity 
+A:['ɔpə'tju:niti] n.机会
+Q:coral 
+A:['kɔrəl] n.珊瑚
+Q:Virgin 
+A:['və:dʒin] 维尔京群岛
+Q:Miami 
+A:[mai'æmi] n.迈阿密(美国最南的城市)
+Q:dinghy 
+A:[ˈdɪŋi:] n.救生筏，小船
+Q:Caribbean 
+A:['kæri'bi:ən] n.加勒比海
+Q:spear 
+A:[spiə] 捕鱼枪
+Q:lobster 
+A:['lɔbstə] n.龙虾
+Q:tanker 
+A:['tæŋkə] n.油轮
+Q:genuinely 
+A:[ˈdʒenjʊɪnlɪ] ad.由衷地
+$第13课
+Q:costume 
+A:['kɔstju:m] n.化装服
+Q:consist 
+A:[kən'sist] v.由…组成
+Q:sheet 
+A:[ʃi:t] n.被单
+Q:effective 
+A:[i'fektiv] a.有明显效果的，有作用的; 生效的
+Q:comfortable 
+A:['kʌmfətəbl] a.舒适的
+Q:storeroom 
+A:['stɔ:rum] n.储藏室
+Q:electricity 
+A:[ilek'trisiti] n.电
+Q:ammeter 
+A:['æmi:tə] n.电表
+Q:pace 
+A:[peis] n.一步
+Q:flee 
+A:[fli:] v.逃走
+Q:slam 
+A:[slæm] v.砰地关上
+$第14课
+Q:gangster 
+A:['gæŋstə] n.歹徒，强盗
+Q:Chicago 
+A:[ʃi'ka:gəu] n.芝加哥(美国城市)
+Q:protection 
+A:[prə'tekʃən] n.保护
+Q:promptly 
+A:['prɔmptli] ad.准时地；迅速的
+Q:destroy 
+A:[dis'trɔi] v.毁掉；消灭
+Q:remarkable 
+A:[ri'ma:kəbl] a.不寻常的
+Q:band 
+A:[bænd] n.帮，团伙
+Q:Florence 
+A:['flɔrəns] n.佛罗伦萨(意大利城市)
+Q:city-state 
+A:[] n.(古代)城邦
+Q:hire 
+A:['haiə] v.租出，雇佣
+Q:prince 
+A:['prins] n.(小附属国的)君主，诸侯；王子
+Q:Florentine 
+A:['flɔrəntain] n.佛罗伦萨人
+Q:funeral 
+A:['fju:nərəl] n.葬礼
+Q:dedicate 
+A:['dedikeit] v.奉献，题献给
+Q:memory 
+A:['meməri] n.纪念
+Q:valiant 
+A:['væljənt] a.英勇的

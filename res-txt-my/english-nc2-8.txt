@@ -1,0 +1,207 @@
+// english-nc2-8
+// V1.0
+
+$第43课
+Q:insure 
+A:[in'ʃuə] v.投保
+Q:fete 
+A:[feit] n.游园会
+Q:admittedly 
+A:[əd'mitidli] ad.公认的
+Q:purchase 
+A:['pə:tʃəs] v.买
+Q:annual 
+A:['ænjuəl] a.一年一度的
+Q:teenager 
+A:[ˈti:neidʒə] n.(13岁至19岁的)青少年
+Q:capsize 
+A:[kæp'saiz] v.(船)翻
+Q:shiver 
+A:['ʃivə] v.打颤，发抖
+Q:dive 
+A:[daiv] v.(头向下)跳水
+Q:haul 
+A:[hɔ:l] v.拖曳
+Q:hawser 
+A:['hɔ:zə] n.粗缆绳
+Q:rim 
+A:[rim] n.(圆形物品的)外沿，边
+Q:winch 
+A:[wintʃ] n.绞车(带有绞盘的车)
+Q:premium 
+A:['pri:mjəm] n.保险费
+Q:recover 
+A:[ri'kʌvə] v.使……得到补偿，弥补
+Q:agonizing 
+A:['ægənaiziŋ] a.精神紧张的，提心吊胆的
+Q:perch 
+A:[pə:tʃ] v.处于(高处)
+Q:precariously 
+A:[prɪˈkeərɪəslɪ] ad.危险地，不稳固地
+Q:overbalance 
+A:['əuvə'bæləns] v.失去平衡
+Q:clamp 
+A:[klæmp] n.夹钳，夹板
+Q:vertically 
+A:['və:tikəli] ad.垂直地
+Q:torrent 
+A:['tɔrənt] n.激流，洪流
+Q:rebound 
+A:[ri'baund] v.弹回
+$第44课
+Q:positively 
+A:[ˈpɔzətɪvlɪ] ad.绝对地，完全地
+Q:compartment 
+A:[kəm'pa:tmənt] n.(轮船的)密封舱
+Q:cramped 
+A:[kræmpt] a.窄小的
+Q:stuffy 
+A:['stʌfi] a.憋气的，闷气的
+Q:monotonous 
+A:[mə'nɔtənəs] a.枯燥的，乏味的，单调的
+Q:rhythm 
+A:['riðəm] n.有节奏的运动
+Q:click 
+A:[klik] v.发出咔哒声
+Q:lull 
+A:[lʌl] v.催人欲睡
+Q:snatch 
+A:[snætʃ] n.短时，片段
+Q:sleeper 
+A:[ˈsli:pə] n.(火车等的)卧铺
+Q:fumble 
+A:['fʌmbl] v.乱摸，摸索
+Q:inspection 
+A:[in'spekʃən] n.检查
+Q:inevitably 
+A:[in'evitəbli] ad.必然地，不可避免地
+Q:destination 
+A:['desti'neiʃən] n.目的地
+Q:exhaust 
+A:[ig'zɔ:st] v.使精疲力尽
+Q:motorway 
+A:['məutəwei] n.快车道
+Q:ferry 
+A:['feri] n.渡船
+Q:cruise 
+A:[kru:z] n.巡游船
+Q:civilize 
+A:['sivilaiz] v.使文明
+Q:spacious 
+A:['speiʃəs] a.宽敞的
+Q:seasick 
+A:[ˈsi:ˌsik] a.晕船的
+Q:intimidate 
+A:[in'timideit] v.恐吓，恫吓
+Q:disadvantage 
+A:['disəd'va:ntidʒ] n.短处，缺点
+Q:exhilaration 
+A:[igzilə'reiʃən] a.使人高兴的，令人兴奋的
+Q:escapist 
+A:[is'keipist] n.逍遥者，逃避现实者
+Q:sip 
+A:[sip] v.呷，啜
+Q:champagne 
+A:[ʃæm'pein] n.香槟酒
+Q:refinement 
+A:[ri'fainmənt] n.精心的安排
+Q:breathtaking 
+A:[] a.激动人心的；不寻常的
+Q:soar 
+A:[sɔ:] v.高飞，翱翔
+Q:effortlessly 
+A:[] ad.不费力地
+Q:landscape 
+A:['lændskeip] n.景色
+Q:fresh 
+A:[freʃ] a.精神饱满的
+Q:uncrumpled 
+A:[] a.没有垮下来
+$第45课
+Q:democratic 
+A:['demə'krætik] a.民主的
+Q:restrict 
+A:[ris'trikt] v.限制
+Q:abuse 
+A:[ə'bju:z, ə'bju:s] n.辱骂，责骂
+Q:contention 
+A:[kən'tenʃən] n.论点
+Q:quintuplet 
+A:['kwintjuplit] n.五胞胎之一
+Q:obscurity 
+A:[əb'skjuəriti] n.默默无闻
+Q:radically 
+A:['rædikəli] ad.彻底地，完全地
+Q:exclusive 
+A:[iks'klu:siv] a.独占的，独家的
+Q:untold 
+A:['ʌn'tould] a.数不尽地，无限的
+Q:South 
+A:[sauθ] 南达科他州(美国)
+Q:perpetual 
+A:[pə'petʃuəl] a.永久的
+Q:nursery 
+A:['nə:səri] n.育婴室，保育室
+Q:commercialization 
+A:[kə'mə:ʃəlai'zeiʃn] n.商品化
+Q:commodity 
+A:[kə'mɔditi] n.商品
+$第46课
+Q:plead 
+A:[pli:d] v.找(借口)，辩解
+Q:ignorance 
+A:['ignərəns] n.无知，不懂
+Q:publication 
+A:['pʌbli'keiʃən] n.出版物，出版
+Q:newlyweds 
+A:[] n.新婚夫妇
+Q:gaily 
+A:['geili] ad.愉快地，高兴地
+Q:leisure 
+A:['leʒə] n.空闲
+Q:keen 
+A:[ki:n] a.热心的，渴望的
+Q:advisory 
+A:[əd'vaizəri] a.咨询的
+Q:novice 
+A:['nɔvis] n.新手
+Q:consumer 
+A:[kən'sju:mə] n.消费者，顾客
+Q:assemble 
+A:[ə'sembl] v.装配，组装
+Q:outlet 
+A:['aut-let] n.出路，出口
+Q:creative 
+A:[kri(:)'eitiv] a.创造性的
+Q:handyman 
+A:['hændimæn] n.手巧的人，能工巧匠
+Q:resourceful 
+A:[ri'sɔ:sful] a.足智多谋的
+Q:fuse 
+A:[fju:z] v.由于烧断保险丝而短路
+Q:rickety 
+A:['rikiti] a.要散架的，晃动的
+Q:clog 
+A:[klɔg] v.堵塞
+Q:delusion 
+A:[di'lu:ʒən] n.错觉
+Q:lawn mower 
+A:[lɔ:n ˈməʊə] 割草机
+Q:adjustment 
+A:[ə'dʒʌstmənt] n.调整
+Q:screw 
+A:[skru:] n.螺丝钉
+Q:dismantle 
+A:[dis'mæntl] v.拆卸
+Q:chunk 
+A:[tʃʌŋk] n.(厚)块
+Q:snap 
+A:[snæp] v.绷断
+Q:insurmountable 
+A:['insə'mauntəbl] a.不能克服的，难以对付的
+Q:jigsaw 
+A:['dʒigsɔ:] n.线锯
+Q:nag 
+A:[næg] v.唠叨不休
+Q:rust 
+A:[rʌst] v.生锈
